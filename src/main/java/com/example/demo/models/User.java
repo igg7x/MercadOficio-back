@@ -36,6 +36,8 @@ public class User {
     @Column(length = 64, nullable = true)
     private Date deleteDate;
 
+    private String image;
+
     @OneToOne(mappedBy = "user")
     private UserOffering userOffering;
 

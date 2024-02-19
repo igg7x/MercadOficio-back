@@ -8,9 +8,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,6 +20,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
+@Table(name = "userCustomers")
 @Data
 public class UserCustomer {
 
@@ -32,7 +35,8 @@ public class UserCustomer {
     @OneToMany(mappedBy = "userCustomer")
     private List<Review> reviews;
 
-    @ManyToMany
-    private List<UserCustomerReviewsLikes> userCustomerReviewsLikes;
+    @ManyToMany()
+    @JoinTable(name = "customerReviewsLikes", joinColumns = @JoinColumn(name = "userCustomerId"), inverseJoinColumns = @JoinColumn(name = "reviewId"))
+    private List<Review> userCustomerLikes;
 
 }
