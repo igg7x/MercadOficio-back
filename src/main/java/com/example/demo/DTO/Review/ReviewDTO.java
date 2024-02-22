@@ -11,8 +11,9 @@ import lombok.Setter;
 @Data
 public class ReviewDTO {
 
-    private Long userOfferingId;
-    private Long userCustomerId;
+    private String name;
+    private String surname;
+    private String email;
     private Date dateReview;
     private String text;
     private Integer num_likes;

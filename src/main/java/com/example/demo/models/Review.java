@@ -26,10 +26,13 @@ public class Review {
     private Long reviewId;
     @Column(length = 128, nullable = false)
     private String text;
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer num_likes;
-    @Column(nullable = false)
-    private Date dateReview;
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
+    private Date created_at;
+
+    @Column(nullable = true, columnDefinition = "TIMESTAMP")
+    private Date deleted_at;
 
     @ManyToOne
     @JoinColumn(name = "userOfferingId", referencedColumnName = "userOfferingId", nullable = false)

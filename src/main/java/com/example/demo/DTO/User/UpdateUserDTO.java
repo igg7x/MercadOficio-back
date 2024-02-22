@@ -5,11 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDTO {
+public class UpdateUserDTO {
+
+    private String biography;
+
+    private String image;
 
     private String name;
+
     private String surname;
-    private String email;
-    private String image;
-    private String biography;
 }

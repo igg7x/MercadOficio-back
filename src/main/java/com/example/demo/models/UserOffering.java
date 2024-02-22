@@ -34,8 +34,6 @@ public class UserOffering {
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
-    @Column(length = 128, nullable = false)
-    private String biography;
     @Column(length = 64, nullable = false)
     private String location;
 
@@ -45,10 +43,11 @@ public class UserOffering {
     @Column(nullable = false)
     private Integer mark;
     @Column(nullable = false)
-    private Integer price;
+    private Integer price; // this is price per hour or per day
 
-    private Date schedules;
-
+    private Date workDayStart;
+    private Date workDayEnd;
+    
     @OneToMany(mappedBy = "userOffering")
     private List<Review> reviews;
 
