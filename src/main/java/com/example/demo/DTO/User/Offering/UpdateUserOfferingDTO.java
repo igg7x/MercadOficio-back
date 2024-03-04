@@ -1,6 +1,6 @@
 package com.example.demo.DTO.User.Offering;
 
-import java.util.Date;
+import java.sql.Time;
 
 import com.example.demo.DTO.User.UpdateUserDTO;
 
@@ -11,9 +11,9 @@ import lombok.Setter;
 @Setter
 public class UpdateUserOfferingDTO extends UpdateUserDTO {
 
-    private String emails;
+    private String email;
     private String location;
     private Integer price;
-    private Date workDayStart;
-    private Date workDayEnd;
+    private Time workDayStart;
+    private Time workDayEnd;
 }

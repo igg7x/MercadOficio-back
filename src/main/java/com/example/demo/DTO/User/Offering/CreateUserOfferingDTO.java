@@ -1,17 +1,25 @@
 package com.example.demo.DTO.User.Offering;
 
-import java.util.Date;
+import java.sql.Time;
+import java.util.List;
 
+import com.example.demo.DTO.Categories.CategorieDTO;
+
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Data
+@NoArgsConstructor
 public class CreateUserOfferingDTO {
 
     private String location;
+    private Integer experience;
     private Integer price;
-    private Date workDayStart;
-    private Date workDayEnd;
-
+    private Time workDayStart;
+    private Time workDayEnd;
+    private List<CategorieDTO> userCategories;
 }

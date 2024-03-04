@@ -29,10 +29,10 @@ public class Review {
     @Column(nullable = false, columnDefinition = "integer default 0")
     private Integer num_likes;
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
-    private Date created_at;
+    private Date createdAt;
 
     @Column(nullable = true, columnDefinition = "TIMESTAMP")
-    private Date deleted_at;
+    private Date deletedAt;
 
     @ManyToOne
     @JoinColumn(name = "userOfferingId", referencedColumnName = "userOfferingId", nullable = false)

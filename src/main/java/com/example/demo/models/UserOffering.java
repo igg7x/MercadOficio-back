@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-import java.util.Date;
+import java.sql.Time;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -40,14 +40,14 @@ public class UserOffering {
     @Column(nullable = false)
     private Integer experience;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer mark;
     @Column(nullable = false)
     private Integer price; // this is price per hour or per day
 
-    private Date workDayStart;
-    private Date workDayEnd;
-    
+    private Time workDayStart;
+    private Time workDayEnd;
+
     @OneToMany(mappedBy = "userOffering")
     private List<Review> reviews;
 

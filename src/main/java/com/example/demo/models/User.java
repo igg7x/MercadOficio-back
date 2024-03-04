@@ -12,6 +12,7 @@ import jakarta.persistence.Table;
 
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "users")
 @Data
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -27,20 +29,16 @@ public class User {
 
     @Column(length = 32, nullable = false)
     private String name;
-    @Column(length = 32, nullable = false)
+    @Column(name = "surname", length = 32, nullable = false)
     private String surname;
-
     @Column(length = 32, nullable = false, unique = true)
-
     private String email;
     @Column(length = 32, nullable = false)
     private String password;
     @Column(length = 64, nullable = true)
-    private Date deleteDate;
+    private Date deleteAt;
     @Column(length = 128, nullable = true)
     private String biography;
-
-    private String image;
 
     @OneToOne(mappedBy = "user")
     private UserOffering userOffering;
