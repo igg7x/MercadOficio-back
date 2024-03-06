@@ -9,8 +9,6 @@ public class UpdateUserDTO {
 
     private String biography;
 
-    private String image;
-
     private String name;
 
     private String surname;

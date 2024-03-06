@@ -55,8 +55,17 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public User updateUserFromDTO(UpdateUserDTO updateUserDTO, User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateUserFromDTO'");
+
+        if (updateUserDTO.getName() != null) {
+            user.setName(updateUserDTO.getName());
+        }
+        if (updateUserDTO.getSurname() != null) {
+            user.setSurname(updateUserDTO.getSurname());
+        }
+        if (updateUserDTO.getBiography() != null) {
+            user.setBiography(updateUserDTO.getBiography());
+        }
+        return user;
     }
 
     @Override
@@ -95,20 +104,22 @@ public class UserMapperImpl implements UserMapper {
     @Override
     public List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList) {
 
-        List<UsersOfferingDTO> usersOfferingDTOList = new ArrayList<>();
+        List<UsersOfferingDTO> usersOfferingDTO = new ArrayList<>();
         for (UserOffering userOffering : userOfferingList) {
-            UsersOfferingDTO usersOfferingDTO = new UsersOfferingDTO();
-            usersOfferingDTO.setName(userOffering.getUser().getName());
-            usersOfferingDTO.setSurname(userOffering.getUser().getSurname());
-            usersOfferingDTO.setEmail(userOffering.getUser().getEmail());
-            usersOfferingDTO.setBiography(userOffering.getUser().getBiography());
-            usersOfferingDTO.setLocation(userOffering.getLocation());
-            usersOfferingDTO.setPrice(userOffering.getPrice());
-            usersOfferingDTO.setWorkDayStart(userOffering.getWorkDayStart());
-            usersOfferingDTO.setWorkDayEnd(userOffering.getWorkDayEnd());
-            usersOfferingDTOList.add(usersOfferingDTO);
+
+            UsersOfferingDTO usersOffering = new UsersOfferingDTO();
+            usersOffering.setName(userOffering.getUser().getName());
+            usersOffering.setSurname(userOffering.getUser().getSurname());
+            usersOffering.setEmail(userOffering.getUser().getEmail());
+            usersOffering.setBiography(userOffering.getUser().getBiography());
+            usersOffering.setLocation(userOffering.getLocation());
+            usersOffering.setExperience(userOffering.getExperience());
+            usersOffering.setPrice(userOffering.getPrice());
+            usersOffering.setWorkDayStart(userOffering.getWorkDayStart());
+            usersOffering.setWorkDayEnd(userOffering.getWorkDayEnd());
+            usersOfferingDTO.add(usersOffering);
         }
-        return usersOfferingDTOList;
+        return usersOfferingDTO;
     }
 
 }

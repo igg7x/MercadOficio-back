@@ -8,6 +8,8 @@ import com.example.demo.models.UserOffering;
 @Repository
 public interface UserOfferingRepository extends JpaRepository<UserOffering, Long> {
 
-    // Optional<UserOffering> findByUserId(User userId);
+    // UserOffering findByUserId(User userId);
 
+    // @Query("SELECT uo FROM user_offerings uo WHERE uo.user.userId = :userId")
+    // UserOffering findByUserId(@Param("userId") Long userId);
 }

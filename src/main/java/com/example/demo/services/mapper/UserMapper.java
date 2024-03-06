@@ -1,5 +1,7 @@
 package com.example.demo.services.mapper;
 
+import java.util.List;
+
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
@@ -10,13 +12,14 @@ import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
+import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.models.User;
 import com.example.demo.models.UserOffering;
 
 @Mapper
 public interface UserMapper {
 
-    UserMapper Mapper = Mappers.getMapper(UserMapper.class);
+    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     UserDTO UsertoUserDTO(User user);
 
@@ -32,4 +35,6 @@ public interface UserMapper {
     UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user);
 
     UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user);
+
+    List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList);
 }

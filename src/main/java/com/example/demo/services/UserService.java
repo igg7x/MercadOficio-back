@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.User.CreateUserDTO;
+import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
@@ -49,8 +51,6 @@ public class UserService {
         if (user == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         }
-        Optional<UserOffering> userOffering = userOfferingRepository.findByUserId(user);
-
         return userMapper.UsertoUserDTO(user);
     }
 
@@ -77,8 +77,29 @@ public class UserService {
 
     public List<UsersOfferingDTO> getUsersOffering() {
         List<UserOffering> userOfferingList = userOfferingRepository.findAll();
+        // return
+        // UserMapper.INSTANCE.UserOfferingListtoUserOfferingDTOList(userOfferingList);
+        return userMapper.UserOfferingListtoUserOfferingDTOList(userOfferingList);
+    }
 
-        return null;
+    public UserDTO updateUser(String email, UpdateUserDTO updateUserDTO) {
+        User user = userRepository.findByEmailAndDeleteAtIsNull(email).orElse(null);
+        if (user == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        user = userMapper.updateUserFromDTO(updateUserDTO, user);
+        user = userRepository.save(user);
+        return userMapper.UsertoUserDTO(user);
+    }
+
+    public void deleteUser(String email) {
+
+        User user = userRepository.findByEmailAndDeleteAtIsNull(email).orElse(null);
+        if (user == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
+        }
+        user.setDeleteAt(Date.from(java.time.Instant.now()));
+        userRepository.save(user);
     }
 
 }
