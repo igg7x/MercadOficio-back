@@ -1,4 +1,4 @@
-package com.example.demo.services.mapper;
+package com.example.demo.services.mapper.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,7 @@ import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
+import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.models.User;
@@ -120,6 +121,27 @@ public class UserMapperImpl implements UserMapper {
             usersOfferingDTO.add(usersOffering);
         }
         return usersOfferingDTO;
+    }
+
+    @Override
+    public UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering) {
+        if (userOfferingDTO.getLocation() != null) {
+            userOffering.setLocation(userOfferingDTO.getLocation());
+        }
+        if (userOfferingDTO.getPrice() != null) {
+            userOffering.setPrice(userOfferingDTO.getPrice());
+
+        }
+        if (userOfferingDTO.getExperience() != null) {
+            userOffering.setExperience(userOfferingDTO.getExperience());
+        }
+        if (userOfferingDTO.getWorkDayStart() != null) {
+            userOffering.setWorkDayStart(userOfferingDTO.getWorkDayStart());
+        }
+        if (userOfferingDTO.getWorkDayEnd() != null) {
+            userOffering.setWorkDayEnd(userOfferingDTO.getWorkDayEnd());
+        }
+        return userOffering;
     }
 
 }

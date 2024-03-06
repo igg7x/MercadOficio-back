@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 public class UpdateUserOfferingDTO extends UpdateUserDTO {
 
-    private String email;
     private String location;
+    private Integer experience;
     private Integer price;
     private Time workDayStart;
     private Time workDayEnd;

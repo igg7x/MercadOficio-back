@@ -1,4 +1,4 @@
-package com.example.demo.services.mapper;
+package com.example.demo.services.mapper.User;
 
 import java.util.List;
 
@@ -11,6 +11,7 @@ import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
+import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.models.User;
@@ -37,4 +38,6 @@ public interface UserMapper {
     UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user);
 
     List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList);
+
+    UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering);
 }
