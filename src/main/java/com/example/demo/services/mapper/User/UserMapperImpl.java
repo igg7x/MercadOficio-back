@@ -80,7 +80,7 @@ public class UserMapperImpl implements UserMapper {
         userOffering.setWorkDayStart(createUserOfferingDto.getWorkDayStart());
         userOffering.setWorkDayEnd(createUserOfferingDto.getWorkDayEnd());
         userOffering.setReviews(new ArrayList<>());
-        userOffering.setUserCategories(createUserOfferingDto.getUserCategories());
+        // userOffering.setUserCategories(createUserOfferingDto.getUserCategories());
         return userOffering;
     }
 

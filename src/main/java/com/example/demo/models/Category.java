@@ -16,14 +16,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "categories")
-public class Categories {
+public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
     @Column(length = 64, nullable = false)
-    private String name;
+    private String categoryName;
 
     @OneToMany(mappedBy = "categories")
     private List<UserCategories> userCategories;

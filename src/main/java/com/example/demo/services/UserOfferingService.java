@@ -10,8 +10,11 @@ import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
+import com.example.demo.models.Category;
 import com.example.demo.models.User;
+import com.example.demo.models.UserCategories;
 import com.example.demo.models.UserOffering;
+import com.example.demo.repositories.UserCategoriesRepository;
 import com.example.demo.repositories.UserOfferingRepository;
 import com.example.demo.repositories.UserRepository;
 import com.example.demo.services.mapper.User.UserMapper;
@@ -24,12 +27,16 @@ public class UserOfferingService {
     private final UserOfferingRepository userOfferingRepository;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final CategoryService categoryService;
+    private final UserCategoriesRepository userCategoriesRepository;
 
     public UserOfferingService(UserOfferingRepository userOfferingRepository, UserRepository userRepository,
-            UserMapper userMapper) {
+            UserMapper userMapper, CategoryService categoryService, UserCategoriesRepository userCategoriesRepository) {
         this.userOfferingRepository = userOfferingRepository;
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.categoryService = categoryService;
+        this.userCategoriesRepository = userCategoriesRepository;
     }
 
     public UserOfferingDTO getUserOfferingByEmail(String email) {
@@ -56,9 +63,26 @@ public class UserOfferingService {
         if (user == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         }
+
+        List<Category> userCategories = categoryService.getAllCategories(createUserOfferingDto.getUserCategories());
+
+        if (userCategories.isEmpty()) {
+            throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Category not found");
+        }
+
         UserOffering userOfferingCreated = userMapper.CreateUserOfferingDTOtoUserOffering(createUserOfferingDto,
                 user);
 
+        for (Category category : userCategories) {
+
+            if (userCategoriesRepository.findByUserAndCategory(user, category).isPresent()) {
+                throw new HttpClientErrorException(HttpStatus.FORBIDDEN, "Category already exists");
+            }
+            UserCategories userCategory = new UserCategories();
+            userCategory.setCategories(category);
+            userCategory.setUserOffering(userOfferingCreated);
+            userCategoriesRepository.save(userCategory);
+        }
         userOfferingCreated = userOfferingRepository.save(userOfferingCreated);
         return userMapper.UserOfferingtoUserOfferingDTO(userOfferingCreated, user);
     }

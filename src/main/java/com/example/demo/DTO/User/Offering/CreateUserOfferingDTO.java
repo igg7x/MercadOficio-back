@@ -3,7 +3,7 @@ package com.example.demo.DTO.User.Offering;
 import java.sql.Time;
 import java.util.List;
 
-import com.example.demo.models.UserCategories;
+import com.example.demo.DTO.Categories.CategorieDTO;
 
 import lombok.Data;
 import lombok.Getter;
@@ -21,5 +21,5 @@ public class CreateUserOfferingDTO {
     private Integer price;
     private Time workDayStart;
     private Time workDayEnd;
-    private List<UserCategories> userCategories;
+    private List<CategorieDTO> userCategories;
 }
