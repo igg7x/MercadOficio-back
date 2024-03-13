@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
@@ -85,7 +86,8 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user) {
+    public UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user,
+            List<CategorieDTO> categories) {
 
         UserOfferingDTO userOfferingDTO = new UserOfferingDTO();
         userOfferingDTO.setName(user.getName());
@@ -93,11 +95,12 @@ public class UserMapperImpl implements UserMapper {
         userOfferingDTO.setEmail(user.getEmail());
         userOfferingDTO.setBiography(user.getBiography());
         userOfferingDTO.setLocation(userOfferingCreated.getLocation());
+        userOfferingDTO.setExperience(userOfferingCreated.getExperience());
         userOfferingDTO.setPrice(userOfferingCreated.getPrice());
         userOfferingDTO.setWorkDayStart(userOfferingCreated.getWorkDayStart());
         userOfferingDTO.setWorkDayEnd(userOfferingCreated.getWorkDayEnd());
         userOfferingDTO.setReviews(userOfferingDTO.getReviews());
-        userOfferingDTO.setCategories(userOfferingDTO.getCategories());
+        userOfferingDTO.setCategories(categories);
 
         return userOfferingDTO;
     }

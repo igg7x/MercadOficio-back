@@ -21,3 +21,4 @@ public class ReviewDTO {
 }
 
 // Path: src/main/java/com/example/demo/DTO/ReviewDTO.java
+// hacer diagrama de clases con respecto a los DTO

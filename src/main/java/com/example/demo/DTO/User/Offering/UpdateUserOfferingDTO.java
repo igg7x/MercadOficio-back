@@ -1,7 +1,9 @@
 package com.example.demo.DTO.User.Offering;
 
 import java.sql.Time;
+import java.util.List;
 
+import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 
 import lombok.Getter;
@@ -16,4 +18,5 @@ public class UpdateUserOfferingDTO extends UpdateUserDTO {
     private Integer price;
     private Time workDayStart;
     private Time workDayEnd;
+    private List<CategorieDTO> categories;
 }
