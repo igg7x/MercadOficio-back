@@ -15,6 +15,7 @@ import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
+import com.example.demo.models.Category;
 import com.example.demo.models.User;
 import com.example.demo.models.UserOffering;
 
@@ -34,7 +35,8 @@ public interface UserMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
     User updateUserFromDTO(UpdateUserDTO updateUserDTO, @MappingTarget User user);
 
-    UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user);
+    UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user,
+            List<Category> categories);
 
     UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user,
             List<CategorieDTO> categories);

@@ -36,11 +36,13 @@ public class UserOfferingController {
     @PostMapping("/{email}")
     private ResponseEntity<UserOfferingDTO> createUserOffering(@PathVariable String email,
             @RequestBody CreateUserOfferingDTO userOfferingDTO) {
-        // try {
-        return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
-        // } catch (Exception e) {
-        // return ResponseEntity.badRequest().build();
-        // }
+        try {
+            return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
+        } catch (
+
+        Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("/{email}")
@@ -48,12 +50,11 @@ public class UserOfferingController {
         return ResponseEntity.ok(userOfferingService.getUserOfferingByEmail(email));
     }
 
-    // @PatchMapping("/{email}")
-    // private ResponseEntity<UserOfferingDTO> updateUserOffering(@PathVariable
-    // String email,
-    // @RequestBody UpdateUserOfferingDTO userOfferingDTO) {
+    @PatchMapping("/{email}")
+    private ResponseEntity<UserOfferingDTO> updateUserOffering(@PathVariable String email,
+            @RequestBody UpdateUserOfferingDTO userOfferingDTO) {
 
-    // return ResponseEntity.ok(userOfferingService.updateUserOffering(email,
-    // userOfferingDTO));
-    // }
+        return ResponseEntity.ok(userOfferingService.updateUserOffering(email,
+                userOfferingDTO));
+    }
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -55,7 +56,8 @@ public class UserOffering {
     @JoinTable(name = "offeringReviewsLikes", joinColumns = @JoinColumn(name = "userOfferingId"), inverseJoinColumns = @JoinColumn(name = "reviewId"))
     private List<Review> userOfferingLikes;
 
-    @OneToMany(mappedBy = "userOffering")
-    private List<UserCategories> userCategories;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @JoinTable(name = "userOfferingCategories", joinColumns = @JoinColumn(name = "userOfferingId"), inverseJoinColumns = @JoinColumn(name = "categoryId"))
+    private List<Category> userCategories;
 
 }

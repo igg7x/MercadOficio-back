@@ -13,6 +13,7 @@ import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
+import com.example.demo.models.Category;
 import com.example.demo.models.User;
 import com.example.demo.models.UserOffering;
 
@@ -71,7 +72,8 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user) {
+    public UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user,
+            List<Category> categories) {
 
         UserOffering userOffering = new UserOffering();
         userOffering.setUser(user);
@@ -81,7 +83,7 @@ public class UserMapperImpl implements UserMapper {
         userOffering.setWorkDayStart(createUserOfferingDto.getWorkDayStart());
         userOffering.setWorkDayEnd(createUserOfferingDto.getWorkDayEnd());
         userOffering.setReviews(new ArrayList<>());
-        // userOffering.setUserCategories(createUserOfferingDto.getUserCategories());
+        userOffering.setUserCategories(categories);
         return userOffering;
     }
 
@@ -128,12 +130,12 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering) {
+
         if (userOfferingDTO.getLocation() != null) {
             userOffering.setLocation(userOfferingDTO.getLocation());
         }
         if (userOfferingDTO.getPrice() != null) {
             userOffering.setPrice(userOfferingDTO.getPrice());
-
         }
         if (userOfferingDTO.getExperience() != null) {
             userOffering.setExperience(userOfferingDTO.getExperience());
@@ -144,6 +146,7 @@ public class UserMapperImpl implements UserMapper {
         if (userOfferingDTO.getWorkDayEnd() != null) {
             userOffering.setWorkDayEnd(userOfferingDTO.getWorkDayEnd());
         }
+
         return userOffering;
     }
 

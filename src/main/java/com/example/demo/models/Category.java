@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,6 +25,6 @@ public class Category {
     @Column(length = 64, nullable = false)
     private String categoryName;
 
-    @OneToMany(mappedBy = "categories")
-    private List<UserCategories> userCategories;
+    @ManyToMany(mappedBy = "userCategories")
+    private List<UserOffering> userOfferings;
 }

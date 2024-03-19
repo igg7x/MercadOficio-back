@@ -8,16 +8,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
+import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.models.Category;
+import com.example.demo.models.UserOffering;
 import com.example.demo.repositories.CategoryRepository;
+import com.example.demo.repositories.UserOfferingRepository;
+import com.example.demo.services.mapper.Category.CategoryMapper;
 
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final UserOfferingRepository userOfferingRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, CategoryMapper categoryMapper,
+            UserOfferingRepository userOfferingRepository) {
         this.categoryRepository = categoryRepository;
+        this.categoryMapper = categoryMapper;
+        this.userOfferingRepository = userOfferingRepository;
     }
 
     public List<Category> getAllCategories(List<CategorieDTO> userCategories) {
@@ -31,6 +40,35 @@ public class CategoryService {
             categories.add(cat);
         }
         return categories;
+    }
+
+    public List<CategorieDTO> getCategoriesFromUser(UserOffering userOffering) {
+        List<Category> categories = userOfferingRepository
+                .findCategoriesByUserOfferingId(userOffering.getUserOfferingId());
+        return categoryMapper.CategoryListtoCategoryDTOList(categories);
+    }
+
+    public void updateCategories(UpdateUserOfferingDTO updateUserOfferingDTO, UserOffering userOffering) {
+        if (updateUserOfferingDTO.getCategories() != null) {
+
+            if (!updateUserOfferingDTO.getCategories().isEmpty()) {
+
+                for (CategorieDTO categorieDTO : updateUserOfferingDTO.getCategories()) {
+
+                    Category category = categoryRepository.findByCategoryName(categorieDTO.getName());
+
+                    if (category == null) {
+                        throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not found");
+                    }
+
+                    if (!userOfferingRepository.existsByUserOfferingIdAndCategoryId(userOffering.getUserOfferingId(),
+                            category.getCategoryId())) {
+
+                        userOffering.getUserCategories().add(category);
+                    }
+                }
+            }
+        }
     }
 
 }

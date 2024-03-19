@@ -13,4 +13,17 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findByCategoryId(Long categoryId);
 
     Category findByCategoryName(String categoryName);
+
+    // List<Category> findByUserOfferings(UserOffering userOffering);
+
+    // @Query("SELECT u.userCategories FROM UserOffering u WHERE u.userOfferingId
+    // =\r\n" + //
+    // " // :userOfferingId AND c.categoryId = :categoryId")
+    // Optional<Category> findCategoryIfExist(@Param("categoryId") Long categoryId,
+    // @Param("userOfferingId") Long userOfferingId);
+
+    // @Query("SELECT u.userCategories FROM UserOffering u WHERE u.userOfferingId =
+    // :userOfferingId")
+    // List<Category> findCategoriesByUserOfferingId(@Param("userOfferingId") Long
+    // userOfferingId);
 }
