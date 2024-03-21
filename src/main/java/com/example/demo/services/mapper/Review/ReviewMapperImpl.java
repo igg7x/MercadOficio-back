@@ -7,14 +7,23 @@ import org.springframework.stereotype.Component;
 import com.example.demo.DTO.Review.CreateReviewDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.models.Review;
+import com.example.demo.models.UserCustomer;
+import com.example.demo.models.UserOffering;
 
 @Component
 public class ReviewMapperImpl implements ReviewMapper {
 
     @Override
-    public ReviewDTO ReviewtoReviewDTO(Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewtoReviewDTO'");
+    public ReviewDTO ReviewtoReviewDTO(Review review, String userEmailReviewer, String userEmailReviewed) {
+
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setText(review.getText());
+        reviewDTO.setUserEmailReviewer(userEmailReviewer);
+        reviewDTO.setUserEmailReviewed(userEmailReviewed);
+        reviewDTO.setNum_likes(review.getNum_likes());
+        reviewDTO.setDateReview(review.getCreatedAt());
+        return reviewDTO;
+
     }
 
     @Override
@@ -30,9 +39,15 @@ public class ReviewMapperImpl implements ReviewMapper {
     }
 
     @Override
-    public Review CreateReviewDTOtoReview(CreateReviewDTO createReviewDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'CreateReviewDTOtoReview'");
+    public Review CreateReviewDTOtoReview(CreateReviewDTO createReviewDTO, UserCustomer userCustomer,
+            UserOffering userOffering) {
+
+        Review review = new Review();
+        review.setText(createReviewDTO.getText());
+        review.setUserCustomer(userCustomer);
+        review.setUserOffering(userOffering);
+
+        return review;
     }
 
     @Override

@@ -43,6 +43,13 @@ public class UserService {
         return userMapper.UsertoUserDTO(user);
     }
 
+    public User findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null)
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
+        return user;
+    }
+
     @Transactional
     public UserDTO createUser(CreateUserDTO createUserDTO) {
         User user = userMapper.CreateUserDTOtoUser(createUserDTO);
