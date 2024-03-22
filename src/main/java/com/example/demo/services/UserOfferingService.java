@@ -41,7 +41,6 @@ public class UserOfferingService {
 
     public UserOffering getUserOffering(String email) {
         User user = userService.findByEmail(email);
-
         UserOffering userOffering = userOfferingRepository.findByUser(user).orElse(null);
         if (userOffering == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not found");

@@ -33,11 +33,13 @@ public class ReviewService {
 
         UserCustomer userCustomer = userCustomerService.getUserCustomer(createReviewDTO.getUserEmailReviewer());
         UserOffering userOffering = userOfferingService.getUserOffering(createReviewDTO.getUserEmailReviewed());
+
         Review reviewCreated = reviewMapper.CreateReviewDTOtoReview(createReviewDTO, userCustomer, userOffering);
         ;
-        reviewRepository.save(reviewCreated);
+
+        reviewCreated = reviewRepository.save(reviewCreated);
+
         return reviewMapper.ReviewtoReviewDTO(reviewCreated, createReviewDTO.getUserEmailReviewer(),
                 createReviewDTO.getUserEmailReviewed());
-
     }
 }

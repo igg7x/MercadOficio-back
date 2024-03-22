@@ -44,7 +44,8 @@ public class UserService {
     }
 
     public User findByEmail(String email) {
-        User user = userRepository.findByEmail(email).orElse(null);
+        User user = userRepository.findByEmailAndDeleteAtIsNull(email).orElse(null);
+        System.out.println(user);
         if (user == null)
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         return user;

@@ -1,5 +1,6 @@
 package com.example.demo.services.mapper.Review;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -46,7 +47,8 @@ public class ReviewMapperImpl implements ReviewMapper {
         review.setText(createReviewDTO.getText());
         review.setUserCustomer(userCustomer);
         review.setUserOffering(userOffering);
-
+        review.setCreatedAt(Date.from(new Date().toInstant()));
+        review.setNum_likes(0);
         return review;
     }
 

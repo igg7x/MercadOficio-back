@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,7 @@ public class ReviewController {
     }
 
     @PostMapping("/create")
-    public ReviewDTO createReview(@RequestBody CreateReviewDTO createReviewDTO) {
-        return reviewService.createReview(createReviewDTO);
+    public ResponseEntity<ReviewDTO> createReview(@RequestBody CreateReviewDTO createReviewDTO) {
+        return ResponseEntity.ok(reviewService.createReview(createReviewDTO));
     }
 }
