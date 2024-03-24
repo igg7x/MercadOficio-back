@@ -22,4 +22,16 @@ public class CategoryMapperImpl implements CategoryMapper {
 
         return categorieDTOs;
     }
+
+    @Override
+    public List<Category> CategoryDTOListtoCategoryList(List<CategorieDTO> categories) {
+
+        List<Category> categoryList = new ArrayList<>();
+        for (CategorieDTO categorieDTO : categories) {
+            Category category = new Category();
+            category.setCategoryName(categorieDTO.getName());
+            categoryList.add(category);
+        }
+        return categoryList;
+    }
 }

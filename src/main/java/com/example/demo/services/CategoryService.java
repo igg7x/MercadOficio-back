@@ -53,20 +53,25 @@ public class CategoryService {
 
             if (!updateUserOfferingDTO.getCategories().isEmpty()) {
 
-                for (CategorieDTO categorieDTO : updateUserOfferingDTO.getCategories()) {
+                // for (CategorieDTO categorieDTO : updateUserOfferingDTO.getCategories()) {
 
-                    Category category = categoryRepository.findByCategoryName(categorieDTO.getName());
+                // Category category =
+                // categoryRepository.findByCategoryName(categorieDTO.getName());
 
-                    if (category == null) {
-                        throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not found");
-                    }
+                // if (category == null) {
+                // throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not
+                // found");
+                // }
 
-                    if (!userOfferingRepository.existsByUserOfferingIdAndCategoryId(userOffering.getUserOfferingId(),
-                            category.getCategoryId())) {
+                // if
+                // (!userOfferingRepository.existsByUserOfferingIdAndCategoryId(userOffering.getUserOfferingId(),
+                // category.getCategoryId())) {
 
-                        userOffering.getUserCategories().add(category);
-                    }
-                }
+                // userOffering.getUserCategories().add(category);
+                // }
+                // }
+                userOffering.setUserCategories(
+                        categoryMapper.CategoryDTOListtoCategoryList(updateUserOfferingDTO.getCategories()));
             }
         }
     }
