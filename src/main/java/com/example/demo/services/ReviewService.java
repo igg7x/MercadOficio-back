@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
@@ -28,6 +30,16 @@ public class ReviewService {
         this.reviewMapper = reviewMapper;
     }
 
+    public List<ReviewDTO> getReviewsByUserOffering(String userEmailReviewed) {
+
+        UserOffering userOffering = userOfferingService.getUserOffering(userEmailReviewed);
+
+        List<Review> reviews = reviewRepository.findByUserOffering(userOffering);
+
+        return reviewMapper.ReviewListToReviewDTOList(reviews, userEmailReviewed);
+
+    }
+
     @Transactional
     public ReviewDTO createReview(CreateReviewDTO createReviewDTO) {
 
@@ -42,4 +54,5 @@ public class ReviewService {
         return reviewMapper.ReviewtoReviewDTO(reviewCreated, createReviewDTO.getUserEmailReviewer(),
                 createReviewDTO.getUserEmailReviewed());
     }
+
 }

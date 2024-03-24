@@ -12,4 +12,7 @@ import com.example.demo.models.UserCustomer;
 public interface UserCustomerRepository extends JpaRepository<UserCustomer, Long> {
 
     Optional<UserCustomer> findByUser(User user);
+
+    // User findByUserId(UserCustomer userCustomer);
+
 }

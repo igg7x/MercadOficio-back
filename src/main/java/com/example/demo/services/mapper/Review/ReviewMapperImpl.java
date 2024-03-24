@@ -1,5 +1,6 @@
 package com.example.demo.services.mapper.Review;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -28,18 +29,6 @@ public class ReviewMapperImpl implements ReviewMapper {
     }
 
     @Override
-    public Review ReviewDTOtoReview(ReviewDTO reviewDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewDTOtoReview'");
-    }
-
-    @Override
-    public CreateReviewDTO ReviewtoCreateReviewDTO(Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewtoCreateReviewDTO'");
-    }
-
-    @Override
     public Review CreateReviewDTOtoReview(CreateReviewDTO createReviewDTO, UserCustomer userCustomer,
             UserOffering userOffering) {
 
@@ -53,6 +42,18 @@ public class ReviewMapperImpl implements ReviewMapper {
     }
 
     @Override
+    public Review ReviewDTOtoReview(ReviewDTO reviewDTO) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'ReviewDTOtoReview'");
+    }
+
+    @Override
+    public CreateReviewDTO ReviewtoCreateReviewDTO(Review review) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'ReviewtoCreateReviewDTO'");
+    }
+
+    @Override
     public Review updateReviewFromDTO(ReviewDTO reviewDTO, Review review) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updateReviewFromDTO'");
@@ -62,6 +63,17 @@ public class ReviewMapperImpl implements ReviewMapper {
     public List<ReviewDTO> ReviewstoReviewDTOs(List<Review> reviews) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'ReviewstoReviewDTOs'");
+    }
+
+    @Override
+    public List<ReviewDTO> ReviewListToReviewDTOList(List<Review> reviews, String userEmailReviewed) {
+
+        List<ReviewDTO> userOfferingReviews = new ArrayList<>();
+        for (Review review : reviews) {
+            userOfferingReviews.add(ReviewtoReviewDTO(review,
+                    review.getUserCustomer().getUser().getEmail(), userEmailReviewed));
+        }
+        return userOfferingReviews;
     }
 
 }

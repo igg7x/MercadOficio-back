@@ -1,12 +1,16 @@
 package com.example.demo.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
+import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
@@ -28,6 +32,9 @@ public class UserOfferingService {
     private final UserMapper userMapperService;
     private final UserOfferingRepository userOfferingRepository;
     private final CategoryMapper categoryMapper;
+    @Lazy
+    @Autowired
+    private ReviewService reviewService;
 
     public UserOfferingService(UserOfferingRepository userOfferingRepository,
             UserMapper userMapperService, CategoryService categoryService,
@@ -57,9 +64,10 @@ public class UserOfferingService {
         }
 
         List<CategorieDTO> userCategories = categoryService.getCategoriesFromUser(userOffering);
+        List<ReviewDTO> userReviews = reviewService.getReviewsByUserOffering(user.getEmail());
 
         return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
-                userCategories);
+                userCategories, userReviews);
     }
 
     public List<UsersOfferingDTO> getUsersOffering() {
@@ -80,9 +88,9 @@ public class UserOfferingService {
                 user, userCategories);
 
         userOfferingCreated = userOfferingRepository.save(userOfferingCreated);
-
+        List<ReviewDTO> reviews = new ArrayList<>();
         return userMapperService.UserOfferingtoUserOfferingDTO(userOfferingCreated, user,
-                categoryMapper.CategoryListtoCategoryDTOList(userCategories));
+                categoryMapper.CategoryListtoCategoryDTOList(userCategories), reviews);
     }
 
     @Transactional
@@ -101,6 +109,6 @@ public class UserOfferingService {
 
         userOffering = userOfferingRepository.save(userOffering);
         return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
-                categoryMapper.CategoryListtoCategoryDTOList(userOffering.getUserCategories()));
+                categoryMapper.CategoryListtoCategoryDTOList(userOffering.getUserCategories()), null);
     }
 }

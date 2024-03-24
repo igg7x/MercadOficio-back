@@ -8,6 +8,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
+import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
@@ -22,26 +23,26 @@ import com.example.demo.models.UserOffering;
 @Mapper
 public interface UserMapper {
 
-    UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
+        UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    UserDTO UsertoUserDTO(User user);
+        UserDTO UsertoUserDTO(User user);
 
-    User UserDTOtoUser(UserDTO userDTO);
+        User UserDTOtoUser(UserDTO userDTO);
 
-    CreateUserDTO UsertoCreateUserDTO(User user);
+        CreateUserDTO UsertoCreateUserDTO(User user);
 
-    User CreateUserDTOtoUser(CreateUserDTO createUserDTO);
+        User CreateUserDTOtoUser(CreateUserDTO createUserDTO);
 
-    @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
-    User updateUserFromDTO(UpdateUserDTO updateUserDTO, @MappingTarget User user);
+        @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
+        User updateUserFromDTO(UpdateUserDTO updateUserDTO, @MappingTarget User user);
 
-    UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user,
-            List<Category> categories);
+        UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user,
+                        List<Category> categories);
 
-    UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user,
-            List<CategorieDTO> categories);
+        UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user,
+                        List<CategorieDTO> categories, List<ReviewDTO> reviews);
 
-    List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList);
+        List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList);
 
-    UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering);
+        UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering);
 }
