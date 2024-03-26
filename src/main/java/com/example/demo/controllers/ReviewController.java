@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
+import com.example.demo.DTO.Review.CreateReviewLikeDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.services.ReviewService;
 
@@ -24,4 +25,15 @@ public class ReviewController {
     public ResponseEntity<ReviewDTO> createReview(@RequestBody CreateReviewDTO createReviewDTO) {
         return ResponseEntity.ok(reviewService.createReview(createReviewDTO));
     }
+
+    @PostMapping("/like")
+    public ResponseEntity<ReviewDTO> createReviewLike(@RequestBody CreateReviewLikeDTO createReviewLikeDTO) {
+
+        if (reviewService.existsReviewLike(createReviewLikeDTO)) {
+            return ResponseEntity.ok(reviewService.deleteReviewLike(createReviewLikeDTO));
+        } else {
+            return ResponseEntity.ok(reviewService.createReviewLike(createReviewLikeDTO));
+        }
+    }
+
 }

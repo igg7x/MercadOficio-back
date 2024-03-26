@@ -29,4 +29,6 @@ public interface ReviewMapper {
     List<ReviewDTO> ReviewstoReviewDTOs(List<Review> reviews);
 
     List<ReviewDTO> ReviewListToReviewDTOList(List<Review> reviews, String userEmailReviewed);
+
+    ReviewDTO ReviewtoReviewDTO(Review review, String email);
 }

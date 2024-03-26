@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +35,8 @@ public class UserCustomer {
     private List<Review> reviews;
 
     @ManyToMany()
-    @JoinTable(name = "customerReviewsLikes", joinColumns = @JoinColumn(name = "userCustomerId"), inverseJoinColumns = @JoinColumn(name = "reviewId"))
+    @JoinTable(name = "customerReviewsLikes", joinColumns = @JoinColumn(name = "userCustomerId"), inverseJoinColumns = @JoinColumn(name = "reviewId"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "userCustomerId", "reviewId" }))
     private List<Review> userCustomerLikes;
 
 }

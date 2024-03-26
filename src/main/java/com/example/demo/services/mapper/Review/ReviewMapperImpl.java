@@ -76,4 +76,14 @@ public class ReviewMapperImpl implements ReviewMapper {
         return userOfferingReviews;
     }
 
+    @Override
+    public ReviewDTO ReviewtoReviewDTO(Review review, String email) {
+        ReviewDTO reviewDTO = new ReviewDTO();
+        reviewDTO.setText(review.getText());
+        reviewDTO.setUserEmailReviewer(email);
+        reviewDTO.setNum_likes(review.getNum_likes());
+        reviewDTO.setDateReview(review.getCreatedAt());
+        return reviewDTO;
+    }
+
 }

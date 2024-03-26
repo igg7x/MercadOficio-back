@@ -21,5 +21,14 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // Optional<List<Review>> findByUserCustomerIdAndDeletedAtIsNotNull(Long
     // userCustomerId);
+    // @Query("SELECT c.userCustomerId FROM customer_reviews_likes c WHERE
+    // c.review_id = :reviewId AND c.user_customer_id = :userCustomerId")
+    // @Query("SELECT CASE WHEN COUNT(c) > 0 THEN true ELSE false END FROM
+    // CustomerReviewLikes c WHERE c.reviewId = :reviewId AND c.userCustomerId =
+    // :userCustomerId")
+    // boolean existsLikeByReviewIdAndUserCustomerId(@Param("reviewId") Long
+    // reviewId,
+    // @Param("userCustomerId") Long userCustomerId);
+    boolean existsByReviewIdAndReviewLikesUserCustomerId(Long reviewId, Long userCustomerId);
 
 }
