@@ -2,6 +2,9 @@ package com.example.demo.services;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
@@ -35,13 +38,16 @@ public class ReviewService {
         this.userCustomerRepository = userCustomerRepository;
     }
 
-    public List<ReviewDTO> getReviewsByUserOffering(String userEmailReviewed) {
+    public Page<ReviewDTO> getReviewsByUserOffering(String userEmailReviewed,
+            Pageable pageable) {
 
         UserOffering userOffering = userOfferingService.getUserOffering(userEmailReviewed);
 
-        List<Review> reviews = reviewRepository.findByUserOffering(userOffering);
+        Page<Review> reviews = reviewRepository.findByUserOfferingAndDeletedAtIsNull(userOffering, pageable);
 
-        return reviewMapper.ReviewListToReviewDTOList(reviews, userEmailReviewed);
+        List<ReviewDTO> reviewDTOList = reviewMapper.ReviewListToReviewDTOList(reviews.getContent(), userEmailReviewed);
+
+        return new PageImpl<>(reviewDTOList, pageable, reviews.getTotalElements());
 
     }
 
@@ -60,6 +66,7 @@ public class ReviewService {
                 createReviewDTO.getUserEmailReviewed());
     }
 
+    @Transactional
     public ReviewDTO createReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
 
         UserCustomer userCustomer = userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
@@ -80,6 +87,7 @@ public class ReviewService {
         return reviewMapper.ReviewtoReviewDTO(review, createReviewLikeDTO.getEmail());
     }
 
+    @Transactional
     public ReviewDTO deleteReviewLike(CreateReviewLikeDTO createReviewDTO) {
 
         UserCustomer userCustomer = userCustomerService.getUserCustomer(createReviewDTO.getEmail());
@@ -99,9 +107,16 @@ public class ReviewService {
         return reviewMapper.ReviewtoReviewDTO(review, createReviewDTO.getEmail());
     }
 
+    @Transactional
+    public void deleteReview() {
+        // THIS METHOD WILL BE IMPLEMENTED WHEN THE MODULE OF SECURYTY IS IMPLEMENTED
+
+    }
+
     public boolean existsReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
         UserCustomer userCustomer = userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
         return reviewRepository.existsByReviewIdAndReviewLikesUserCustomerId(createReviewLikeDTO.getReviewId(),
                 userCustomer.getUserCustomerId());
     }
+
 }

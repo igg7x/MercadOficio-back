@@ -2,6 +2,8 @@ package com.example.demo.controllers;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
@@ -28,9 +31,11 @@ public class UserOfferingController {
     }
 
     @GetMapping
-    private ResponseEntity<List<UsersOfferingDTO>> getUsersOffering() {
-        List<UsersOfferingDTO> usersOffering = userOfferingService.getUsersOffering();
-        return ResponseEntity.ok(usersOffering);
+    private ResponseEntity<List<UsersOfferingDTO>> getUsersOffering(
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+
+        Page<UsersOfferingDTO> usersOfferingPage = userOfferingService.getUsersOffering(PageRequest.of(page, size));
+        return ResponseEntity.ok(usersOfferingPage.getContent());
     }
 
     @PostMapping("/{email}")
@@ -38,16 +43,15 @@ public class UserOfferingController {
             @RequestBody CreateUserOfferingDTO userOfferingDTO) {
         try {
             return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
 
     @GetMapping("/{email}")
-    private ResponseEntity<UserOfferingDTO> getUserOffering(@PathVariable String email) {
-        return ResponseEntity.ok(userOfferingService.getUserOfferingByEmail(email));
+    private ResponseEntity<UserOfferingDTO> getUserOffering(@PathVariable String email,
+            @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(userOfferingService.getUserOfferingByEmail(email, PageRequest.of(page, size)));
     }
 
     @PatchMapping("/{email}")

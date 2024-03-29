@@ -5,6 +5,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -55,7 +58,7 @@ public class UserOfferingService {
         return userOffering;
     }
 
-    public UserOfferingDTO getUserOfferingByEmail(String email) {
+    public UserOfferingDTO getUserOfferingByEmail(String email, Pageable pageable) {
         User user = userService.findByEmail(email);
 
         UserOffering userOffering = userOfferingRepository.findByUser(user).orElse(null);
@@ -64,15 +67,25 @@ public class UserOfferingService {
         }
 
         List<CategorieDTO> userCategories = categoryService.getCategoriesFromUser(userOffering);
-        List<ReviewDTO> userReviews = reviewService.getReviewsByUserOffering(user.getEmail());
+        Page<ReviewDTO> userReviews = reviewService.getReviewsByUserOffering(user.getEmail(), pageable);
 
         return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
-                userCategories, userReviews);
+                userCategories, userReviews.getContent());
     }
 
-    public List<UsersOfferingDTO> getUsersOffering() {
-        List<UserOffering> userOfferingList = userOfferingRepository.findAll();
-        return userMapperService.UserOfferingListtoUserOfferingDTOList(userOfferingList);
+    public Page<UsersOfferingDTO> getUsersOffering(Pageable pageable) {
+        // List<UserOffering> userOfferingList = userOfferingRepository.findAll();
+        // List<UsersOfferingDTO> userOfferingDTOs = userMapperService
+        // .UserOfferingListtoUserOfferingDTOList(userOfferingList);
+
+        // Page<UsersOfferingDTO> page = (Page<UsersOfferingDTO>) userOfferingDTOs;
+
+        Page<UserOffering> userOfferingPage = userOfferingRepository.findAll(pageable);
+        List<UsersOfferingDTO> userOfferingDTOs = userMapperService
+                .UserOfferingListtoUserOfferingDTOList(userOfferingPage.getContent()); // ADD the category List in each
+                                                                                       // object of the list
+
+        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingPage.getTotalElements());
     }
 
     @Transactional
