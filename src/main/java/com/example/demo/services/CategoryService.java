@@ -29,6 +29,18 @@ public class CategoryService {
         this.userOfferingRepository = userOfferingRepository;
     }
 
+    public List<CategorieDTO> getCategories() {
+        return categoryMapper.CategoryListtoCategoryDTOList(categoryRepository.findAll());
+    }
+
+    public Category getCategoryByName(String name) {
+        Category category = categoryRepository.findByCategoryName(name);
+        if (category == null) {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not found");
+        }
+        return category;
+    }
+
     public List<Category> getAllCategories(List<CategorieDTO> userCategories) {
         List<Category> categories = new ArrayList<>();
         for (CategorieDTO category : userCategories) {

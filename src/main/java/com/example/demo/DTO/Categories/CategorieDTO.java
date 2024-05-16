@@ -8,6 +8,5 @@ import lombok.Setter;
 @Setter
 @Data
 public class CategorieDTO {
-
     private String name;
 }

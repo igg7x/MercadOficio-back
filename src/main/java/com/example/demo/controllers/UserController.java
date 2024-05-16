@@ -26,6 +26,7 @@ public class UserController {
 
     @GetMapping("/{email}")
     private ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        // userService.getUsersByCriteria();
         try {
             return ResponseEntity.ok(userService.getUserByEmail(email));
         } catch (Exception e) {
@@ -61,4 +62,5 @@ public class UserController {
             return ResponseEntity.badRequest().build();
         }
     }
+
 }

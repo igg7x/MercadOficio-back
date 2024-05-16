@@ -1,7 +1,6 @@
 package com.example.demo.services;
 
 import java.util.Date;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -45,7 +44,6 @@ public class UserService {
 
     public User findByEmail(String email) {
         User user = userRepository.findByEmailAndDeleteAtIsNull(email).orElse(null);
-        System.out.println(user);
         if (user == null)
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         return user;
@@ -79,5 +77,15 @@ public class UserService {
         user.setDeleteAt(Date.from(java.time.Instant.now()));
         userRepository.save(user);
     }
+
+    // public void getUsersByCriteria() {
+    // Specification<User> spec = Specification
+    // .where((root, query, criteriaBuilder) -> root.get("userId").isNotNull());
+
+    // List<User> users = userRepository.findAll(spec);
+    // for (User user : users) {
+    // System.out.println(user.getEmail());
+    // }
+    // }
 
 }

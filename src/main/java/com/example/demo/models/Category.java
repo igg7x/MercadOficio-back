@@ -2,6 +2,8 @@ package com.example.demo.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,9 +24,10 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long categoryId;
 
-    @Column(length = 64, nullable = false)
+    @Column(length = 64, nullable = false, unique = true)
     private String categoryName;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "userCategories")
     private List<UserOffering> userOfferings;
 }

@@ -34,4 +34,11 @@ public class CategoryMapperImpl implements CategoryMapper {
         }
         return categoryList;
     }
+
+    @Override
+    public CategorieDTO CategorytoCategoryDTO(Category category) {
+        CategorieDTO categorieDTO = new CategorieDTO();
+        categorieDTO.setName(category.getCategoryName());
+        return categorieDTO;
+    }
 }

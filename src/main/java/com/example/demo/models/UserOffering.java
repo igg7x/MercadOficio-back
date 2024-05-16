@@ -41,8 +41,8 @@ public class UserOffering {
     @Column(nullable = false)
     private Integer experience;
 
-    @Column(nullable = true)
-    private Integer mark; // this is the average mark of the user
+    @Column(nullable = true, columnDefinition = "integer default 0")
+    private Double calification; // this is the average mark of the user
     @Column(nullable = false)
     private Integer price; // this is price per hour or per day
 

@@ -1,10 +1,12 @@
 package com.example.demo.controllers;
 
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +23,7 @@ import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.services.UserOfferingService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1/user-offerings")
 public class UserOfferingController {
 
@@ -31,11 +34,20 @@ public class UserOfferingController {
     }
 
     @GetMapping
-    private ResponseEntity<List<UsersOfferingDTO>> getUsersOffering(
+    private ResponseEntity<Page<UsersOfferingDTO>> getUsersOffering(
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
 
         Page<UsersOfferingDTO> usersOfferingPage = userOfferingService.getUsersOffering(PageRequest.of(page, size));
-        return ResponseEntity.ok(usersOfferingPage.getContent());
+        return ResponseEntity.ok(usersOfferingPage);
+    }
+
+    @PostMapping("search")
+    private ResponseEntity<Page<UsersOfferingDTO>> getUsersOfferingByCriteria(
+            Pageable pageable,
+            @RequestBody Map<String, String> searchCriteria) {
+        Page<UsersOfferingDTO> usersOfferingPage = userOfferingService.getUsersOfferingByCriteria(searchCriteria,
+                pageable);
+        return ResponseEntity.ok(usersOfferingPage);
     }
 
     @PostMapping("/{email}")
@@ -57,7 +69,6 @@ public class UserOfferingController {
     @PatchMapping("/{email}")
     private ResponseEntity<UserOfferingDTO> updateUserOffering(@PathVariable String email,
             @RequestBody UpdateUserOfferingDTO userOfferingDTO) {
-
         return ResponseEntity.ok(userOfferingService.updateUserOffering(email,
                 userOfferingDTO));
     }

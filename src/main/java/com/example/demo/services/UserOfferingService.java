@@ -2,14 +2,17 @@ package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
@@ -24,6 +27,7 @@ import com.example.demo.models.UserOffering;
 import com.example.demo.repositories.UserOfferingRepository;
 import com.example.demo.services.mapper.Category.CategoryMapper;
 import com.example.demo.services.mapper.User.UserMapper;
+import com.example.demo.services.specifications.UserOfferingSpecifications;
 
 import jakarta.transaction.Transactional;
 
@@ -74,18 +78,38 @@ public class UserOfferingService {
     }
 
     public Page<UsersOfferingDTO> getUsersOffering(Pageable pageable) {
-        // List<UserOffering> userOfferingList = userOfferingRepository.findAll();
-        // List<UsersOfferingDTO> userOfferingDTOs = userMapperService
-        // .UserOfferingListtoUserOfferingDTOList(userOfferingList);
-
-        // Page<UsersOfferingDTO> page = (Page<UsersOfferingDTO>) userOfferingDTOs;
-
-        Page<UserOffering> userOfferingPage = userOfferingRepository.findAll(pageable);
+        Specification<UserOffering> spec = Specification
+                .where(null);
+        List<UserOffering> userOfferingList = userOfferingRepository.findAll(spec);
         List<UsersOfferingDTO> userOfferingDTOs = userMapperService
-                .UserOfferingListtoUserOfferingDTOList(userOfferingPage.getContent()); // ADD the category List in each
-                                                                                       // object of the list
+                .UserOfferingListtoUserOfferingDTOList(userOfferingList); // ADD the category List in each
+        // object of the list
+        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingList.size());
+    }
 
-        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingPage.getTotalElements());
+    public Page<UsersOfferingDTO> getUsersOfferingByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
+        Specification<UserOffering> spec = Specification
+                .where(null);
+
+        if (StringUtils.hasLength(searchCriteria.get("category"))) {
+            spec = spec.and(UserOfferingSpecifications.filterByCategory(searchCriteria.get("category")));
+        }
+        if (StringUtils.hasLength(searchCriteria.get("location"))) {
+            spec = spec.and(UserOfferingSpecifications.filterByLocation(searchCriteria.get("location")));
+        }
+        if (StringUtils.hasLength(searchCriteria.get("mark"))) {
+            spec = spec
+                    .and(UserOfferingSpecifications
+                            .filterByCalification(Integer.parseInt(searchCriteria.get("minCalification")),
+                                    Integer.parseInt(searchCriteria.get("maxCalification"))));
+        }
+
+        List<UserOffering> userOfferingList = userOfferingRepository.findAll(spec);
+
+        List<UsersOfferingDTO> userOfferingDTOs = userMapperService
+                .UserOfferingListtoUserOfferingDTOList(userOfferingList); // ADD the category List in each
+        // object of the list
+        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingList.size());
     }
 
     @Transactional

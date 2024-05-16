@@ -122,6 +122,7 @@ public class UserMapperImpl implements UserMapper {
             usersOffering.setLocation(userOffering.getLocation());
             usersOffering.setExperience(userOffering.getExperience());
             usersOffering.setPrice(userOffering.getPrice());
+            userOffering.setCalification(userOffering.getCalification());
             usersOffering.setWorkDayStart(userOffering.getWorkDayStart());
             usersOffering.setWorkDayEnd(userOffering.getWorkDayEnd());
             usersOfferingDTO.add(usersOffering);

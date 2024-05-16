@@ -3,6 +3,7 @@ package com.example.demo.controllers;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import com.example.demo.models.Category;
 import com.example.demo.services.CategoryService;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 
@@ -25,5 +27,10 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<Category>> getAllCategories(@RequestBody List<CategorieDTO> userCategories) {
         return ResponseEntity.ok(categoryService.getAllCategories(userCategories));
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<CategorieDTO>> getAllCategories() {
+        return ResponseEntity.ok(categoryService.getCategories());
     }
 }

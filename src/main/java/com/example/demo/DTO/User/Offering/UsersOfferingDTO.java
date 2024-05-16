@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsersOfferingDTO extends UserDTO {
 
+    private Double calification;
     private String location;
     private Integer experience;
     private Integer price;

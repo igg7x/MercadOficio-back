@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,8 @@ import com.example.demo.models.User;
 import com.example.demo.models.UserOffering;
 
 @Repository
-public interface UserOfferingRepository extends JpaRepository<UserOffering, Long> {
+public interface UserOfferingRepository
+        extends JpaRepository<UserOffering, Long>, JpaSpecificationExecutor<UserOffering> {
     Optional<UserOffering> findByUser(User user);
 
     @Query("SELECT u.userCategories FROM UserOffering u WHERE u.userOfferingId = :userOfferingId")
