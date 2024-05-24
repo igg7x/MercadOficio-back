@@ -28,7 +28,7 @@ public class UserOfferingSpecifications {
 
     public static Specification<UserOffering> filterByCalification(Integer minCalification, Integer maxCalification) {
         return (root, query, criteriaBuilder) -> {
-            return criteriaBuilder.between(root.get("price"), minCalification, maxCalification);
+            return criteriaBuilder.between(root.get("calification"), minCalification, maxCalification);
         };
     }
 }

@@ -97,7 +97,7 @@ public class UserOfferingService {
         if (StringUtils.hasLength(searchCriteria.get("location"))) {
             spec = spec.and(UserOfferingSpecifications.filterByLocation(searchCriteria.get("location")));
         }
-        if (StringUtils.hasLength(searchCriteria.get("mark"))) {
+        if (StringUtils.hasLength(searchCriteria.get("calification"))) {
             spec = spec
                     .and(UserOfferingSpecifications
                             .filterByCalification(Integer.parseInt(searchCriteria.get("minCalification")),

@@ -27,14 +27,19 @@ public class User {
 
     @Column(length = 32, nullable = false)
     private String name;
+
     @Column(name = "surname", length = 32, nullable = false)
     private String surname;
+
     @Column(length = 32, nullable = false, unique = true)
     private String email;
+
     @Column(length = 32, nullable = false)
     private String password;
+
     @Column(length = 64, nullable = true)
     private Date deleteAt;
+
     @Column(length = 128, nullable = true)
     private String biography;
 

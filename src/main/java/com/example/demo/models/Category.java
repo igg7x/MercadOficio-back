@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,9 @@ public class Category {
 
     @Column(length = 64, nullable = false, unique = true)
     private String categoryName;
+
+    @OneToOne(mappedBy = "category")
+    private Job job;
 
     @JsonIgnore
     @ManyToMany(mappedBy = "userCategories")

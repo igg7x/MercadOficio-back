@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -31,12 +32,15 @@ public class UserCustomer {
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
+    // @OneToMany(mappedBy = "userCustomer")
+    // private List<Review> reviews;
+
     @OneToMany(mappedBy = "userCustomer")
-    private List<Review> reviews;
+    private List<Job> jobs;
 
     @ManyToMany()
-    @JoinTable(name = "customerReviewsLikes", joinColumns = @JoinColumn(name = "userCustomerId"), inverseJoinColumns = @JoinColumn(name = "reviewId"), uniqueConstraints = @UniqueConstraint(columnNames = {
-            "userCustomerId", "reviewId" }))
-    private List<Review> userCustomerLikes;
+    @JoinTable(name = "customerReviewsLikes", joinColumns = @JoinColumn(name = "userCustomerId"), inverseJoinColumns = @JoinColumn(name = "jobId"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "userCustomerId", "jobId" }))
+    private Set<Job> userCustomerLikes;
 
 }
