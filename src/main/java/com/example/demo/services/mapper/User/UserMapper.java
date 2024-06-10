@@ -27,10 +27,6 @@ public interface UserMapper {
 
         UserDTO UsertoUserDTO(User user);
 
-        User UserDTOtoUser(UserDTO userDTO);
-
-        CreateUserDTO UsertoCreateUserDTO(User user);
-
         User CreateUserDTOtoUser(CreateUserDTO createUserDTO);
 
         @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)

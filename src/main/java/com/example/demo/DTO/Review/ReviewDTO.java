@@ -1,7 +1,5 @@
 package com.example.demo.DTO.Review;
 
-import java.util.Date;
-
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,9 +11,7 @@ public class ReviewDTO {
 
     private String userEmailReviewer;
     private String userEmailReviewed;
-    private Date dateReview;
     private String text;
-    private Integer num_likes;
 
 }
 

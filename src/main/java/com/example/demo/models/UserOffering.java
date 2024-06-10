@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
 import java.sql.Time;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -51,7 +52,7 @@ public class UserOffering {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "userOfferingCategories", joinColumns = @JoinColumn(name = "userOfferingId"), inverseJoinColumns = @JoinColumn(name = "categoryId"))
-    private Set<Category> userCategories;
+    private List<Category> userCategories;
 
     @OneToMany(mappedBy = "userOffering")
     private Set<ApplyJobs> applyJobs;

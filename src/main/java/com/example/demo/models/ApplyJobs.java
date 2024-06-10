@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -8,8 +8,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import lombok.AllArgsConstructor;
 
 @Entity
+@AllArgsConstructor
 public class ApplyJobs {
 
     @EmbeddedId
@@ -26,6 +28,6 @@ public class ApplyJobs {
     private UserOffering userOffering;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
-    private Date applyDate;
+    private LocalDate applyDate;
 
 }

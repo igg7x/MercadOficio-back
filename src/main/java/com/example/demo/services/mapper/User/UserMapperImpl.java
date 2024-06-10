@@ -32,19 +32,6 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User UserDTOtoUser(UserDTO userDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'UserDTOtoUser'");
-
-    }
-
-    @Override
-    public CreateUserDTO UsertoCreateUserDTO(User user) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'UsertoCreateUserDTO'");
-    }
-
-    @Override
     public User CreateUserDTOtoUser(CreateUserDTO createUserDTO) {
 
         User user = new User();
@@ -80,10 +67,8 @@ public class UserMapperImpl implements UserMapper {
         userOffering.setUser(user);
         userOffering.setLocation(createUserOfferingDto.getLocation());
         userOffering.setPrice(createUserOfferingDto.getPrice());
-        userOffering.setExperience(createUserOfferingDto.getExperience());
         userOffering.setWorkDayStart(createUserOfferingDto.getWorkDayStart());
         userOffering.setWorkDayEnd(createUserOfferingDto.getWorkDayEnd());
-        userOffering.setReviews(new ArrayList<>());
         userOffering.setUserCategories(categories);
         return userOffering;
     }
@@ -98,11 +83,11 @@ public class UserMapperImpl implements UserMapper {
         userOfferingDTO.setEmail(user.getEmail());
         userOfferingDTO.setBiography(user.getBiography());
         userOfferingDTO.setLocation(userOfferingCreated.getLocation());
-        userOfferingDTO.setExperience(userOfferingCreated.getExperience());
         userOfferingDTO.setPrice(userOfferingCreated.getPrice());
         userOfferingDTO.setWorkDayStart(userOfferingCreated.getWorkDayStart());
         userOfferingDTO.setWorkDayEnd(userOfferingCreated.getWorkDayEnd());
         userOfferingDTO.setReviews(reviews);
+
         userOfferingDTO.setCategories(categories);
 
         return userOfferingDTO;
@@ -120,11 +105,11 @@ public class UserMapperImpl implements UserMapper {
             usersOffering.setEmail(userOffering.getUser().getEmail());
             usersOffering.setBiography(userOffering.getUser().getBiography());
             usersOffering.setLocation(userOffering.getLocation());
-            usersOffering.setExperience(userOffering.getExperience());
             usersOffering.setPrice(userOffering.getPrice());
             userOffering.setCalification(userOffering.getCalification());
             usersOffering.setWorkDayStart(userOffering.getWorkDayStart());
             usersOffering.setWorkDayEnd(userOffering.getWorkDayEnd());
+
             usersOfferingDTO.add(usersOffering);
         }
         return usersOfferingDTO;
@@ -138,9 +123,6 @@ public class UserMapperImpl implements UserMapper {
         }
         if (userOfferingDTO.getPrice() != null) {
             userOffering.setPrice(userOfferingDTO.getPrice());
-        }
-        if (userOfferingDTO.getExperience() != null) {
-            userOffering.setExperience(userOfferingDTO.getExperience());
         }
         if (userOfferingDTO.getWorkDayStart() != null) {
             userOffering.setWorkDayStart(userOfferingDTO.getWorkDayStart());

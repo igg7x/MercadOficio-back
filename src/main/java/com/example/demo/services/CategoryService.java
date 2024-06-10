@@ -33,7 +33,7 @@ public class CategoryService {
         return categoryMapper.CategoryListtoCategoryDTOList(categoryRepository.findAll());
     }
 
-    public Category getCategoryByName(String name) {
+    public Category getCategory(String name) {
         Category category = categoryRepository.findByCategoryName(name);
         if (category == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not found");
@@ -41,9 +41,9 @@ public class CategoryService {
         return category;
     }
 
-    public List<Category> getAllCategories(List<CategorieDTO> userCategories) {
+    public List<Category> getAllCategories(List<CategorieDTO> categoriesDTOs) {
         List<Category> categories = new ArrayList<>();
-        for (CategorieDTO category : userCategories) {
+        for (CategorieDTO category : categoriesDTOs) {
 
             Category cat = categoryRepository.findByCategoryName(category.getName());
             if (cat == null) {
@@ -61,30 +61,9 @@ public class CategoryService {
     }
 
     public void updateCategories(UpdateUserOfferingDTO updateUserOfferingDTO, UserOffering userOffering) {
-        if (updateUserOfferingDTO.getCategories() != null) {
-
-            if (!updateUserOfferingDTO.getCategories().isEmpty()) {
-
-                // for (CategorieDTO categorieDTO : updateUserOfferingDTO.getCategories()) {
-
-                // Category category =
-                // categoryRepository.findByCategoryName(categorieDTO.getName());
-
-                // if (category == null) {
-                // throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Category not
-                // found");
-                // }
-
-                // if
-                // (!userOfferingRepository.existsByUserOfferingIdAndCategoryId(userOffering.getUserOfferingId(),
-                // category.getCategoryId())) {
-
-                // userOffering.getUserCategories().add(category);
-                // }
-                // }
-                userOffering.setUserCategories(
-                        categoryMapper.CategoryDTOListtoCategoryList(updateUserOfferingDTO.getCategories()));
-            }
+        if (updateUserOfferingDTO.getCategories() != null && !updateUserOfferingDTO.getCategories().isEmpty()) {
+            userOffering.setUserCategories(
+                    categoryMapper.CategoryDTOListToCategoryList(updateUserOfferingDTO.getCategories()));
         }
     }
 

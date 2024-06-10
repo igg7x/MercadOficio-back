@@ -24,7 +24,7 @@ public class CategoryMapperImpl implements CategoryMapper {
     }
 
     @Override
-    public List<Category> CategoryDTOListtoCategoryList(List<CategorieDTO> categories) {
+    public List<Category> CategoryDTOListToCategoryList(List<CategorieDTO> categories) {
 
         List<Category> categoryList = new ArrayList<>();
         for (CategorieDTO categorieDTO : categories) {

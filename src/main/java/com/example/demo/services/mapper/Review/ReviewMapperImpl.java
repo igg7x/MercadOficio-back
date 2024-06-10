@@ -22,8 +22,6 @@ public class ReviewMapperImpl implements ReviewMapper {
         reviewDTO.setText(review.getText());
         reviewDTO.setUserEmailReviewer(userEmailReviewer);
         reviewDTO.setUserEmailReviewed(userEmailReviewed);
-        reviewDTO.setNum_likes(review.getNum_likes());
-        reviewDTO.setDateReview(review.getCreatedAt());
         return reviewDTO;
 
     }
@@ -43,26 +41,22 @@ public class ReviewMapperImpl implements ReviewMapper {
 
     @Override
     public Review ReviewDTOtoReview(ReviewDTO reviewDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewDTOtoReview'");
+        return null;
     }
 
     @Override
     public CreateReviewDTO ReviewtoCreateReviewDTO(Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewtoCreateReviewDTO'");
+        return null;
     }
 
     @Override
     public Review updateReviewFromDTO(ReviewDTO reviewDTO, Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateReviewFromDTO'");
+        return null;
     }
 
     @Override
     public List<ReviewDTO> ReviewstoReviewDTOs(List<Review> reviews) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewstoReviewDTOs'");
+        return null;
     }
 
     @Override
@@ -81,8 +75,6 @@ public class ReviewMapperImpl implements ReviewMapper {
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setText(review.getText());
         reviewDTO.setUserEmailReviewer(email);
-        reviewDTO.setNum_likes(review.getNum_likes());
-        reviewDTO.setDateReview(review.getCreatedAt());
         return reviewDTO;
     }
 

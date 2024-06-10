@@ -1,17 +1,16 @@
 package com.example.demo.models;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Set;
+
+import org.hibernate.annotations.UuidGenerator;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,8 +21,8 @@ import lombok.Setter;
 @Table(name = "jobs")
 public class Job {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long jobId;
+    @UuidGenerator
+    private String jobId;
 
     @Column(length = 64, nullable = false)
     private String title;
@@ -38,15 +37,21 @@ public class Job {
     private Boolean status;
 
     @Column(nullable = false, columnDefinition = "varchar(128) default ''")
+    private String userOfferingEmail;
+
+    @Column(nullable = false, columnDefinition = "varchar(128) default ''")
     private String review;
 
     @Column(nullable = false)
-    private Date publish_date;
+    private LocalDate publish_date;
 
     @Column(nullable = false)
-    private Date deadline_date;
+    private LocalDate deadline_date;
 
-    @OneToOne
+    @Column(nullable = false, columnDefinition = "tinyint default 0")
+    private Boolean deleted;
+
+    @ManyToOne
     @JoinColumn(name = "categoryId", referencedColumnName = "categoryId", nullable = false)
     private Category category;
 

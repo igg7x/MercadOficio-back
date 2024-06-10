@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -39,18 +37,19 @@ public class UserOfferingService {
     private final UserMapper userMapperService;
     private final UserOfferingRepository userOfferingRepository;
     private final CategoryMapper categoryMapper;
-    @Lazy
-    @Autowired
-    private ReviewService reviewService;
+    private final JobService jobService;
+    // @Lazy
+    // @Autowired
 
     public UserOfferingService(UserOfferingRepository userOfferingRepository,
             UserMapper userMapperService, CategoryService categoryService,
-            CategoryMapper categoryMapper, UserService userService) {
+            CategoryMapper categoryMapper, UserService userService, JobService jobService) {
         this.userOfferingRepository = userOfferingRepository;
         this.userMapperService = userMapperService;
         this.categoryService = categoryService;
         this.categoryMapper = categoryMapper;
         this.userService = userService;
+        this.jobService = jobService;
     }
 
     public UserOffering getUserOffering(String email) {
@@ -71,7 +70,7 @@ public class UserOfferingService {
         }
 
         List<CategorieDTO> userCategories = categoryService.getCategoriesFromUser(userOffering);
-        Page<ReviewDTO> userReviews = reviewService.getReviewsByUserOffering(user.getEmail(), pageable);
+        Page<ReviewDTO> userReviews = jobService.getReviewsByUserOffering(user.getEmail(), pageable);
 
         return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
                 userCategories, userReviews.getContent());
