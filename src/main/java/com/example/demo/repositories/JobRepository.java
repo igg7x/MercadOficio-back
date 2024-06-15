@@ -15,6 +15,6 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 
     List<Job> findByUserOfferingEmail(String email, Pageable pageable);
 
-    List<Job> findByCategory(Category category);
+    List<Job> findByCategoryAndStatusFalseAndDeletedFalse(Category category);
 
 }

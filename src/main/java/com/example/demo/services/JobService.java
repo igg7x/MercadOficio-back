@@ -81,11 +81,15 @@ public class JobService {
         return new PageImpl<>(reviewDTOs, pageable, jobs.size());
     }
 
+    // Obtengo todos los JOBS que tengan las categorias que se pasan por parametro y
+    // esten disponibles
+    // (status = false) y no esten eliminados (deleted = false)
+
     public Page<JobDTO> getAllJobs(List<CategorieDTO> categories, Pageable pageable) {
         List<Category> categoryList = categoryService.getAllCategories(categories);
         List<Job> jobs = new ArrayList<>();
         for (Category category : categoryList) {
-            jobs.addAll(jobRepository.findByCategory(category));
+            jobs.addAll(jobRepository.findByCategoryAndStatusFalseAndDeletedFalse(category));
         }
         List<JobDTO> jobDTOs = jobMapper.JobListToJobDTOList(jobs);
         return new PageImpl<>(jobDTOs, pageable, jobs.size());
