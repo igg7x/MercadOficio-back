@@ -10,7 +10,8 @@ public class JobSpecifications {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.and(
                     criteriaBuilder.equal(root.get("jobId"), jobId),
-                    criteriaBuilder.equal(root.get("deleted"), false));
+                    criteriaBuilder.equal(root.get("deleted"), false),
+                    criteriaBuilder.equal(root.get("status"), false));
         };
     }
 

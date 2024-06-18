@@ -9,11 +9,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @AllArgsConstructor
-@Getter
+@NoArgsConstructor
+@Data
 public class ApplyJobs {
 
     @EmbeddedId
@@ -21,12 +23,12 @@ public class ApplyJobs {
 
     @ManyToOne
     @MapsId("jobId")
-    @JoinColumn(nullable = false, name = "jobId")
+    @JoinColumn(nullable = false, name = "job_id")
     private Job job;
 
     @ManyToOne
     @MapsId("userOfferingId")
-    @JoinColumn(nullable = false, name = "userOfferingId")
+    @JoinColumn(nullable = false, name = "user_offering_id")
     private UserOffering userOffering;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")

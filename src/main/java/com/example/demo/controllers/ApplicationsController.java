@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.Job.ApplyJobDTO;
+import com.example.demo.DTO.Job.JobDTO;
 import com.example.demo.services.ApplyJobService;
-
-import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/applications")
-@AllArgsConstructor
 public class ApplicationsController {
 
     private final ApplyJobService applyJobsService;
+
+    public ApplicationsController(ApplyJobService applyJobsService) {
+        this.applyJobsService = applyJobsService;
+    }
 
     @PostMapping("/{jobId}")
     public ResponseEntity<Void> applyJob(@PathVariable String jobId, @RequestBody ApplyJobDTO application) {
@@ -32,13 +34,13 @@ public class ApplicationsController {
         }
     }
 
-    @GetMapping("/{jobId}")
+    @GetMapping("/job/{jobId}")
     public Page<ApplyJobDTO> getApplicationsByJob(@PathVariable String jobId, Pageable pageable) {
         return applyJobsService.getApplicationsByJob(jobId, pageable);
     }
 
     @GetMapping("/{userOfferingEmail}")
-    public Page<ApplyJobDTO> getApplicationsByUserOffering(@PathVariable String userOfferingEmail, Pageable pageable) {
+    public Page<JobDTO> getApplicationsByUserOffering(@PathVariable String userOfferingEmail, Pageable pageable) {
         return applyJobsService.getApplicationsByUserOffering(userOfferingEmail, pageable);
     }
 
