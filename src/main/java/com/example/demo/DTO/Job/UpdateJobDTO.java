@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdateJobDTO {
+    private String title;
     private String userOfferingEmail;
     private LocalDate deadline_date;
-    private String review;
     private String description;
 }

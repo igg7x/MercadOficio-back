@@ -1,11 +1,9 @@
 package com.example.demo.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -14,7 +12,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
-import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
@@ -37,58 +34,56 @@ public class UserOfferingService {
     private final UserMapper userMapperService;
     private final UserOfferingRepository userOfferingRepository;
     private final CategoryMapper categoryMapper;
-    private final JobService jobService;
     // @Lazy
     // @Autowired
 
     public UserOfferingService(UserOfferingRepository userOfferingRepository,
             UserMapper userMapperService, CategoryService categoryService,
-            CategoryMapper categoryMapper, UserService userService, JobService jobService) {
+            CategoryMapper categoryMapper, UserService userService) {
         this.userOfferingRepository = userOfferingRepository;
         this.userMapperService = userMapperService;
         this.categoryService = categoryService;
         this.categoryMapper = categoryMapper;
         this.userService = userService;
-        this.jobService = jobService;
     }
 
     public UserOffering getUserOffering(String email) {
         User user = userService.findByEmail(email);
         UserOffering userOffering = userOfferingRepository.findByUser(user).orElse(null);
         if (userOffering == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not found");
+            return null;
+            // throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not
+            // found");
         }
         return userOffering;
     }
 
     public UserOfferingDTO getUserOfferingByEmail(String email, Pageable pageable) {
-        User user = userService.findByEmail(email);
 
-        UserOffering userOffering = userOfferingRepository.findByUser(user).orElse(null);
-        if (userOffering == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not found");
-        }
-
+        UserOffering userOffering = getUserOffering(email);
         List<CategorieDTO> userCategories = categoryService.getCategoriesFromUser(userOffering);
-        Page<ReviewDTO> userReviews = jobService.getReviewsByUserOffering(user.getEmail(), pageable);
+        // Page<ReviewDTO> userReviews =
+        // jobService.getReviewsByUserOffering(userOffering.getUser().getEmail(),
+        // pageable);
 
-        return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
-                userCategories, userReviews.getContent());
+        return userMapperService.UserOfferingtoUserOfferingDTO(userOffering.getUser(),
+                userCategories);
     }
 
     public Page<UsersOfferingDTO> getUsersOffering(Pageable pageable) {
         Specification<UserOffering> spec = Specification
                 .where(null);
-        List<UserOffering> userOfferingList = userOfferingRepository.findAll(spec);
-        List<UsersOfferingDTO> userOfferingDTOs = userMapperService
-                .UserOfferingListtoUserOfferingDTOList(userOfferingList); // ADD the category List in each
+        Page<UserOffering> userOfferingPage = userOfferingRepository.findAll(spec, pageable);
+        Page<UsersOfferingDTO> userOfferingDTOPage = userOfferingPage.map(
+                userOffering -> userMapperService.UserOfferingtoUserOfferingDTO(userOffering)); // ADD the category List
+                                                                                                // in each
         // object of the list
-        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingList.size());
+        return userOfferingDTOPage;
     }
 
     public Page<UsersOfferingDTO> getUsersOfferingByCriteria(Map<String, String> searchCriteria, Pageable pageable) {
         Specification<UserOffering> spec = Specification
-                .where(null);
+                .where(UserOfferingSpecifications.isNotBanned());
 
         if (StringUtils.hasLength(searchCriteria.get("category"))) {
             spec = spec.and(UserOfferingSpecifications.filterByCategory(searchCriteria.get("category")));
@@ -103,12 +98,11 @@ public class UserOfferingService {
                                     Integer.parseInt(searchCriteria.get("maxCalification"))));
         }
 
-        List<UserOffering> userOfferingList = userOfferingRepository.findAll(spec);
+        Page<UserOffering> userOfferingPage = userOfferingRepository.findAll(spec, pageable);
 
-        List<UsersOfferingDTO> userOfferingDTOs = userMapperService
-                .UserOfferingListtoUserOfferingDTOList(userOfferingList); // ADD the category List in each
-        // object of the list
-        return new PageImpl<>(userOfferingDTOs, pageable, userOfferingList.size());
+        Page<UsersOfferingDTO> usersOfferingDTOpage = userOfferingPage.map(
+                userOffering -> userMapperService.UserOfferingtoUserOfferingDTO(userOffering));
+        return usersOfferingDTOpage;
     }
 
     @Transactional
@@ -124,27 +118,22 @@ public class UserOfferingService {
                 user, userCategories);
 
         userOfferingCreated = userOfferingRepository.save(userOfferingCreated);
-        List<ReviewDTO> reviews = new ArrayList<>();
-        return userMapperService.UserOfferingtoUserOfferingDTO(userOfferingCreated, user,
-                categoryMapper.CategoryListtoCategoryDTOList(userCategories), reviews);
+        return userMapperService.UserOfferingtoUserOfferingDTO(user,
+                categoryMapper.CategoryListtoCategoryDTOList(userCategories));
+
     }
 
     @Transactional
     public UserOfferingDTO updateUserOffering(String email, UpdateUserOfferingDTO userOfferingDTO) {
         User user = userService.findByEmail(email);
-
         UserOffering userOffering = userOfferingRepository.findByUser(user).orElse(null);
         if (userOffering == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not found");
         }
-
-        userOffering = userMapperService.updateUserOfferingFromDTO(userOfferingDTO,
-                userOffering);
-
         categoryService.updateCategories(userOfferingDTO, userOffering);
 
         userOffering = userOfferingRepository.save(userOffering);
-        return userMapperService.UserOfferingtoUserOfferingDTO(userOffering, user,
-                categoryMapper.CategoryListtoCategoryDTOList(userOffering.getUserCategories()), null);
+        return userMapperService.UserOfferingtoUserOfferingDTO(user,
+                categoryMapper.CategoryListtoCategoryDTOList(userOffering.getUserCategories()));
     }
 }

@@ -3,8 +3,6 @@ package com.example.demo.services.mapper.Job;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.DTO.Job.CreateJobDTO;
@@ -66,6 +64,8 @@ public class JobMapperImpl implements JobMapper {
         List<ReviewDTO> reviewDTOs = new ArrayList<>();
         for (Job job : jobs) {
             ReviewDTO reviewDTO = new ReviewDTO();
+            reviewDTO.setJobId(job.getJobId());
+            reviewDTO.setJobTitle(job.getTitle());
             reviewDTO.setText(job.getReview());
             reviewDTO.setUserEmailReviewer(job.getUserCustomer().getUser().getEmail());
             reviewDTO.setUserEmailReviewed(userCustomerEmail);
@@ -77,21 +77,28 @@ public class JobMapperImpl implements JobMapper {
 
     @Override
     public Job UpdateJobDTOtoJob(UpdateJobDTO updateJobDTO, Job job) {
-        if (job.getUserOfferingEmail() != null || Strings.isNotEmpty(job.getUserOfferingEmail())) {
-            if (updateJobDTO.getReview() != null) {
-                job.setReview(updateJobDTO.getReview());
-            } else {
-                throw new IllegalArgumentException("The job has already been taken");
+        if (!job.getUserOfferingEmail().isEmpty() && job.getStatus()) {
+
+            if (!job.getReview().isEmpty()) {
+                throw new IllegalArgumentException("Ya se ha reseñado el trabajo");
             }
+            // if (!updateJobDTO.getReview().isEmpty() ||
+            // updateJobDTO.getUserOfferingEmail() != null) {
+            // job.setReview(updateJobDTO.getReview());
+            // }
         } else {
+            if (updateJobDTO.getTitle() != null) {
+                job.setTitle(updateJobDTO.getTitle());
+            }
             if (updateJobDTO.getDescription() != null) {
                 job.setDescription(updateJobDTO.getDescription());
             }
-            if (updateJobDTO.getDeadline_date() != null &&
-                    !updateJobDTO.getDeadline_date().isBefore(job.getPublish_date())) {
-                job.setDeadline_date(updateJobDTO.getDeadline_date());
-            } else {
-                throw new IllegalArgumentException("The deadline date is before the publish date");
+            if (updateJobDTO.getDeadline_date() != null) {
+                if (!updateJobDTO.getDeadline_date().isBefore(job.getPublish_date())) {
+                    job.setDeadline_date(updateJobDTO.getDeadline_date());
+                } else {
+                    throw new IllegalArgumentException("La fecha límite es anterior a la fecha de publicación");
+                }
             }
             if (updateJobDTO.getUserOfferingEmail() != null) {
                 job.setUserOfferingEmail(updateJobDTO.getUserOfferingEmail());

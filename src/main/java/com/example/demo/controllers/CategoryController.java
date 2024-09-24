@@ -14,7 +14,7 @@ import com.example.demo.models.Category;
 import com.example.demo.services.CategoryService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/v1/categories")
 public class CategoryController {
 

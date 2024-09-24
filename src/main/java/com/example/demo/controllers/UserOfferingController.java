@@ -6,11 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,11 +21,12 @@ import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
+import com.example.demo.auth.CurrentUserEmail;
 import com.example.demo.services.UserOfferingService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
-@RequestMapping("/api/v1/user-offerings")
+@RequestMapping("/api/v1/users-offerings")
 public class UserOfferingController {
 
     private final UserOfferingService userOfferingService;
@@ -41,7 +43,7 @@ public class UserOfferingController {
         return ResponseEntity.ok(usersOfferingPage);
     }
 
-    @PostMapping("search")
+    @PostMapping("/private/search")
     private ResponseEntity<Page<UsersOfferingDTO>> getUsersOfferingByCriteria(
             Pageable pageable,
             @RequestBody Map<String, String> searchCriteria) {
@@ -50,9 +52,9 @@ public class UserOfferingController {
         return ResponseEntity.ok(usersOfferingPage);
     }
 
-    @PostMapping("/{email}")
-    private ResponseEntity<UserOfferingDTO> createUserOffering(@PathVariable String email,
-            @RequestBody CreateUserOfferingDTO userOfferingDTO) {
+    @PostMapping("/public/create")
+    private ResponseEntity<UserOfferingDTO> createUserOffering(@CurrentUserEmail String email,
+            @Validated @RequestBody CreateUserOfferingDTO userOfferingDTO) {
         try {
             return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
         } catch (Exception e) {
@@ -60,14 +62,14 @@ public class UserOfferingController {
         }
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/private/{email}")
     private ResponseEntity<UserOfferingDTO> getUserOffering(@PathVariable String email,
             @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(userOfferingService.getUserOfferingByEmail(email, PageRequest.of(page, size)));
     }
 
-    @PatchMapping("/{email}")
-    private ResponseEntity<UserOfferingDTO> updateUserOffering(@PathVariable String email,
+    @PutMapping("/private/update")
+    private ResponseEntity<UserOfferingDTO> updateUserOffering(@CurrentUserEmail String email,
             @RequestBody UpdateUserOfferingDTO userOfferingDTO) {
         return ResponseEntity.ok(userOfferingService.updateUserOffering(email,
                 userOfferingDTO));

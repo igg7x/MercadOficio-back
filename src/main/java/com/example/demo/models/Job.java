@@ -62,4 +62,7 @@ public class Job {
     @OneToMany(mappedBy = "job")
     private Set<ApplyJobs> applyJobs;
 
+    @OneToMany(mappedBy = "job")
+    private Set<Review> reviews;
+
 }

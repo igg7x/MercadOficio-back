@@ -41,13 +41,16 @@ public class UserCustomerService {
 
     public UserCustomer getUserCustomer(String userEmail) {
         User user = userService.findByEmail(userEmail);
+
         if (user == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         }
 
         UserCustomer userCustomer = userCustomerRepository.findByUser(user).orElse(null);
         if (userCustomer == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not found");
+            return null;
+            // throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User Offering not
+            // found");
         }
         return userCustomer;
     }

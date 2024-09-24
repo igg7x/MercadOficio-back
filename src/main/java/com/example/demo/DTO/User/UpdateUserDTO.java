@@ -1,9 +1,5 @@
 package com.example.demo.DTO.User;
 
-import java.util.List;
-
-import com.example.demo.DTO.Categories.CategorieDTO;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +7,10 @@ import lombok.Setter;
 @Setter
 public class UpdateUserDTO {
 
+    private String location;
     private String biography;
-
-    private String name;
-
-    private String surname;
-
-    private List<CategorieDTO> userCategories;
+    private Long phone;
+    // @Nullable
+    // private Set<Roles> newRoles;
+    // private List<CategorieDTO> userCategories;
 }

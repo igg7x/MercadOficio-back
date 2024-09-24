@@ -11,14 +11,13 @@ import jakarta.persistence.criteria.JoinType;
 
 public class ApplyJobSpecifications {
 
-    public static Specification<ApplyJobs> findByJobIdAndDeletedFalseAndStatusFalse(String jobId) {
+    public static Specification<ApplyJobs> findByJobIdAndDeletedFalse(String jobId) {
         return (root, query, criteriaBuilder) -> {
             Join<ApplyJobs, Job> join = root.join("job");
             Join<ApplyJobs, Job> rightJoin = root.join("job", JoinType.RIGHT);
             return criteriaBuilder.and(
                     criteriaBuilder.equal(join.get("jobId"), jobId),
-                    criteriaBuilder.equal(rightJoin.get("deleted"), false),
-                    criteriaBuilder.equal(rightJoin.get("status"), false));
+                    criteriaBuilder.equal(rightJoin.get("deleted"), false));
         };
     }
 

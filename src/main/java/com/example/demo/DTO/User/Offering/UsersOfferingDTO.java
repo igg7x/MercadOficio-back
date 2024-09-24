@@ -1,7 +1,8 @@
 package com.example.demo.DTO.User.Offering;
 
-import java.sql.Time;
+import java.util.List;
 
+import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.User.UserDTO;
 
 import lombok.Getter;
@@ -14,10 +15,10 @@ import lombok.Setter;
 public class UsersOfferingDTO extends UserDTO {
 
     private Double calification;
-    private String location;
-    private Integer experience;
-    private Integer price;
-    private Time workDayStart;
-    private Time workDayEnd;
+    private List<CategorieDTO> categories;
+    // private Integer experience;
+    // private Integer price;
+    // private Time workDayStart;
+    // private Time workDayEnd;
 
 }

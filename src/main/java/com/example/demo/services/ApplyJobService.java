@@ -34,9 +34,9 @@ public class ApplyJobService {
     private final JobMapper jobMapper;
 
     @Transactional
-    public void applyJob(String jobId, ApplyJobDTO applyJobDTO) {
+    public void applyJob(String jobId, String userOfferingEmail) {
         Job job = jobService.findJobById(jobId);
-        UserOffering userOffering = userOfferingService.getUserOffering(applyJobDTO.getUserOfferingEmail());
+        UserOffering userOffering = userOfferingService.getUserOffering(userOfferingEmail);
         if (!userOffering.getUserCategories().contains(job.getCategory())) {
             throw new HttpClientErrorException(org.springframework.http.HttpStatus.BAD_REQUEST,
                     "User Offering does not have the required category");
@@ -54,7 +54,7 @@ public class ApplyJobService {
     public Page<ApplyJobDTO> getApplicationsByJob(String jobId, Pageable pageable) {
 
         List<ApplyJobs> applications = applyJobsRepository
-                .findAll(ApplyJobSpecifications.findByJobIdAndDeletedFalseAndStatusFalse(jobId));
+                .findAll(ApplyJobSpecifications.findByJobIdAndDeletedFalse(jobId));
         List<ApplyJobDTO> applicationsDTO = applicationsMapper.ApplyJobListToApplyJobDTOList(applications);
         return new PageImpl<>(applicationsDTO, pageable, applications.size());
     }

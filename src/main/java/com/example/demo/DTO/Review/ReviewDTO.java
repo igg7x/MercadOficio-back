@@ -1,5 +1,7 @@
 package com.example.demo.DTO.Review;
 
+import java.util.Date;
+
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,10 +10,12 @@ import lombok.Setter;
 @Setter
 @Data
 public class ReviewDTO {
-
+    private String jobId;
+    private String jobTitle;
     private String userEmailReviewer;
     private String userEmailReviewed;
     private String text;
+    private Date createdAt;
 
 }
 

@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByDeleteAtIsNull();
 
-    Optional<User> findByEmailAndDeleteAtIsNull(String email);
+    Optional<User> findByEmailAndDeleteAtIsNullAndIsBannedIsFalse(String email);
 
     Optional<User> findByEmail(String email);
 

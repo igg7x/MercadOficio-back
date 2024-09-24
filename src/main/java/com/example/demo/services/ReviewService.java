@@ -1,139 +1,122 @@
-// package com.example.demo.services;
+package com.example.demo.services;
 
-// import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
 
-// import org.springframework.data.domain.Pageable;
-// import org.springframework.data.domain.Page;
-// import org.springframework.data.domain.PageImpl;
-// import org.springframework.stereotype.Service;
+import com.example.demo.DTO.Review.CreateReviewDTO;
+import com.example.demo.DTO.Review.ReviewDTO;
+import com.example.demo.models.Job;
+import com.example.demo.models.Review;
+import com.example.demo.models.User;
+import com.example.demo.repositories.ReviewRepository;
+import com.example.demo.services.mapper.Review.ReviewMapper;
+import com.example.demo.services.specifications.ReviewSpecifications;
 
-// import com.example.demo.DTO.Review.CreateReviewDTO;
-// import com.example.demo.DTO.Review.CreateReviewLikeDTO;
-// import com.example.demo.DTO.Review.ReviewDTO;
-// import com.example.demo.models.Review;
-// import com.example.demo.models.UserCustomer;
-// import com.example.demo.models.UserOffering;
-// import com.example.demo.repositories.ReviewRepository;
-// import com.example.demo.repositories.UserCustomerRepository;
-// import com.example.demo.services.mapper.Review.ReviewMapper;
+import jakarta.transaction.Transactional;
 
-// import jakarta.transaction.Transactional;
+@Service
+public class ReviewService {
 
-// @Service
-// public class ReviewService {
+    private final ReviewRepository reviewRepository;
+    private final ReviewMapper reviewMapper;
+    private final UserService userService;
+    private final JobService jobService;
 
-// private final ReviewRepository reviewRepository;
-// private final UserOfferingService userOfferingService;
-// private final UserCustomerService userCustomerService;
-// private final ReviewMapper reviewMapper;
-// private final UserCustomerRepository userCustomerRepository;
+    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, UserService userService,
+            JobService jobService) {
+        this.reviewRepository = reviewRepository;
+        this.reviewMapper = reviewMapper;
+        this.userService = userService;
+        this.jobService = jobService;
+    }
 
-// public ReviewService(ReviewRepository reviewRepository, UserOfferingService
-// userOfferingService,
-// UserCustomerService userCustomerService, ReviewMapper reviewMapper,
-// UserCustomerRepository userCustomerRepository) {
-// this.reviewRepository = reviewRepository;
-// this.userOfferingService = userOfferingService;
-// this.userCustomerService = userCustomerService;
-// this.reviewMapper = reviewMapper;
-// this.userCustomerRepository = userCustomerRepository;
-// }
+    public Page<ReviewDTO> getReviewsByUserReviewed(String userEmailReviewed,
+            Pageable pageable) {
+        User user = userService.findByEmail(userEmailReviewed);
+        Page<Review> reviews = reviewRepository
+                .findAll(ReviewSpecifications.findByUserReviewedIdAndDeletedIsNull(user.getUserId()), pageable);
 
-// public Page<ReviewDTO> getReviewsByUserOffering(String userEmailReviewed,
-// Pageable pageable) {
+        Page<ReviewDTO> reviewsDTOPage = reviews.map(
+                review -> reviewMapper.ReviewtoReviewDTO(review));
+        return reviewsDTOPage;
+    }
 
-// UserOffering userOffering =
-// userOfferingService.getUserOffering(userEmailReviewed);
+    @Transactional
+    public ReviewDTO createReview(CreateReviewDTO createReviewDTO) {
 
-// Page<Review> reviews =
-// reviewRepository.findByUserOfferingAndDeletedAtIsNull(userOffering,
-// pageable);
+        User userReviewer = userService.findByEmail(createReviewDTO.getUserEmailReviewer());
 
-// List<ReviewDTO> reviewDTOList =
-// reviewMapper.ReviewListToReviewDTOList(reviews.getContent(),
-// userEmailReviewed);
+        User userReviewed = userService.findByEmail(createReviewDTO.getUserEmailReviewed());
 
-// return new PageImpl<>(reviewDTOList, pageable, reviews.getTotalElements());
+        Job jobToReview = jobService.findJobById(createReviewDTO.getJobId());
+        Review reviewCreated = reviewMapper.CreateReviewDTOtoReview(createReviewDTO, jobToReview, userReviewed,
+                userReviewer);
+        ;
 
-// }
+        reviewCreated = reviewRepository.save(reviewCreated);
 
-// @Transactional
-// public ReviewDTO createReview(CreateReviewDTO createReviewDTO) {
+        return reviewMapper.ReviewtoReviewDTO(reviewCreated);
+    }
 
-// UserCustomer userCustomer =
-// userCustomerService.getUserCustomer(createReviewDTO.getUserEmailReviewer());
-// UserOffering userOffering =
-// userOfferingService.getUserOffering(createReviewDTO.getUserEmailReviewed());
+    // @Transactional
+    // public ReviewDTO createReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
 
-// Review reviewCreated = reviewMapper.CreateReviewDTOtoReview(createReviewDTO,
-// userCustomer, userOffering);
-// ;
+    // UserCustomer userCustomer =
+    // userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
 
-// reviewCreated = reviewRepository.save(reviewCreated);
+    // Review review =
+    // reviewRepository.findById(createReviewLikeDTO.getReviewId()).get();
 
-// return reviewMapper.ReviewtoReviewDTO(reviewCreated,
-// createReviewDTO.getUserEmailReviewer(),
-// createReviewDTO.getUserEmailReviewed());
-// }
+    // List<UserCustomer> reviewsLikes = review.getReviewLikes();
+    // reviewsLikes.add(userCustomer);
+    // review.setReviewLikes(reviewsLikes);
 
-// @Transactional
-// public ReviewDTO createReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
+    // List<Review> userLikes = userCustomer.getUserCustomerLikes();
+    // userLikes.add(review);
+    // userCustomer.setUserCustomerLikes(userLikes);
 
-// UserCustomer userCustomer =
-// userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
+    // review = reviewRepository.save(review);
+    // userCustomerRepository.save(userCustomer);
 
-// Review review =
-// reviewRepository.findById(createReviewLikeDTO.getReviewId()).get();
+    // return reviewMapper.ReviewtoReviewDTO(review,
+    // createReviewLikeDTO.getEmail());
+    // }
 
-// List<UserCustomer> reviewsLikes = review.getReviewLikes();
-// reviewsLikes.add(userCustomer);
-// review.setReviewLikes(reviewsLikes);
+    // @Transactional
+    // public ReviewDTO deleteReviewLike(CreateReviewLikeDTO createReviewDTO) {
 
-// List<Review> userLikes = userCustomer.getUserCustomerLikes();
-// userLikes.add(review);
-// userCustomer.setUserCustomerLikes(userLikes);
+    // UserCustomer userCustomer =
+    // userCustomerService.getUserCustomer(createReviewDTO.getEmail());
 
-// review = reviewRepository.save(review);
-// userCustomerRepository.save(userCustomer);
+    // Review review =
+    // reviewRepository.findById(createReviewDTO.getReviewId()).get();
 
-// return reviewMapper.ReviewtoReviewDTO(review,
-// createReviewLikeDTO.getEmail());
-// }
+    // List<UserCustomer> reviewsLikes = review.getReviewLikes();
+    // reviewsLikes.remove(userCustomer);
+    // review.setReviewLikes(reviewsLikes);
 
-// @Transactional
-// public ReviewDTO deleteReviewLike(CreateReviewLikeDTO createReviewDTO) {
+    // List<Review> userLikes = userCustomer.getUserCustomerLikes();
+    // userLikes.remove(review);
+    // userCustomer.setUserCustomerLikes(userLikes);
 
-// UserCustomer userCustomer =
-// userCustomerService.getUserCustomer(createReviewDTO.getEmail());
+    // review = reviewRepository.save(review);
 
-// Review review =
-// reviewRepository.findById(createReviewDTO.getReviewId()).get();
+    // return reviewMapper.ReviewtoReviewDTO(review, createReviewDTO.getEmail());
+    // }
 
-// List<UserCustomer> reviewsLikes = review.getReviewLikes();
-// reviewsLikes.remove(userCustomer);
-// review.setReviewLikes(reviewsLikes);
+    // @Transactional
+    // public void deleteReview() {
+    // // THIS METHOD WILL BE IMPLEMENTED WHEN THE MODULE OF SECURYTY IS IMPLEMENTED
 
-// List<Review> userLikes = userCustomer.getUserCustomerLikes();
-// userLikes.remove(review);
-// userCustomer.setUserCustomerLikes(userLikes);
+    // }
 
-// review = reviewRepository.save(review);
+    // public boolean existsReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
+    // UserCustomer userCustomer =
+    // userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
+    // return
+    // reviewRepository.existsByReviewIdAndReviewLikesUserCustomerId(createReviewLikeDTO.getReviewId(),
+    // userCustomer.getUserCustomerId());
+    // }
 
-// return reviewMapper.ReviewtoReviewDTO(review, createReviewDTO.getEmail());
-// }
-
-// @Transactional
-// public void deleteReview() {
-// // THIS METHOD WILL BE IMPLEMENTED WHEN THE MODULE OF SECURYTY IS IMPLEMENTED
-
-// }
-
-// public boolean existsReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
-// UserCustomer userCustomer =
-// userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
-// return
-// reviewRepository.existsByReviewIdAndReviewLikesUserCustomerId(createReviewLikeDTO.getReviewId(),
-// userCustomer.getUserCustomerId());
-// }
-
-// }
+}

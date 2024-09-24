@@ -8,16 +8,17 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
-import com.example.demo.DTO.Review.ReviewDTO;
 import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
+import com.example.demo.DTO.User.Customer.UserCustomerDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.models.Category;
 import com.example.demo.models.User;
+import com.example.demo.models.UserCustomer;
 import com.example.demo.models.UserOffering;
 
 @Mapper
@@ -35,10 +36,14 @@ public interface UserMapper {
         UserOffering CreateUserOfferingDTOtoUserOffering(CreateUserOfferingDTO createUserOfferingDto, User user,
                         List<Category> categories);
 
-        UserOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOfferingCreated, User user,
-                        List<CategorieDTO> categories, List<ReviewDTO> reviews);
+        UserOfferingDTO UserOfferingtoUserOfferingDTO(User user,
+                        List<CategorieDTO> categories);
+
+        UsersOfferingDTO UserOfferingtoUserOfferingDTO(UserOffering userOffering);
 
         List<UsersOfferingDTO> UserOfferingListtoUserOfferingDTOList(List<UserOffering> userOfferingList);
 
         UserOffering updateUserOfferingFromDTO(UpdateUserOfferingDTO userOfferingDTO, UserOffering userOffering);
+
+        UserCustomerDTO UserCustomertoUserCustomerDTO(UserCustomer userCustomer);
 }

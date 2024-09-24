@@ -62,8 +62,13 @@ public class CategoryService {
 
     public void updateCategories(UpdateUserOfferingDTO updateUserOfferingDTO, UserOffering userOffering) {
         if (updateUserOfferingDTO.getCategories() != null && !updateUserOfferingDTO.getCategories().isEmpty()) {
-            userOffering.setUserCategories(
-                    categoryMapper.CategoryDTOListToCategoryList(updateUserOfferingDTO.getCategories()));
+            List<Category> categories = new ArrayList<>();
+            for (CategorieDTO categoryDTO : updateUserOfferingDTO.getCategories()) {
+                Category category = categoryRepository.findByCategoryName(categoryDTO.getName());
+                categories.add(category);
+            }
+            userOffering.setUserCategories(categories);
+
         }
     }
 

@@ -3,6 +3,7 @@ package com.example.demo.services.specifications;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.example.demo.models.Category;
+import com.example.demo.models.User;
 import com.example.demo.models.UserOffering;
 
 import jakarta.persistence.criteria.Join;
@@ -14,6 +15,14 @@ public class UserOfferingSpecifications {
         return (root, query, criteriaBuilder) -> {
             Join<UserOffering, Category> join = root.join("userCategories");
             return criteriaBuilder.like(join.get("categoryName"), "%" + category + "%");
+        };
+    }
+
+    public static Specification<UserOffering> isNotBanned() {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<UserOffering, User> join = root.join("user");
+            return criteriaBuilder.equal(join.get("isBanned"), false);
         };
     }
 

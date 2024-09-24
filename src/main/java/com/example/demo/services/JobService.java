@@ -10,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
-import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.Job.CreateJobDTO;
-import com.example.demo.DTO.Job.DeleteJobDTO;
 import com.example.demo.DTO.Job.JobDTO;
 import com.example.demo.DTO.Job.UpdateJobDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
@@ -33,10 +31,7 @@ public class JobService {
     private final UserCustomerService userCustomerService;
     private final CategoryService categoryService;
     private final JobMapper jobMapper;
-
-    public List<JobDTO> getAllJobsByCategories(List<CategorieDTO> categorieDTOs) {
-        return jobMapper.JobListToJobDTOList(jobRepository.findAll());
-    }
+    private final UserOfferingService userOfferingService;
 
     public Job findJobById(String id) {
         Job job = jobRepository.findOne(JobSpecifications.findByJobIdAndDeletedAtIsNull(id)).orElse(null);
@@ -69,15 +64,16 @@ public class JobService {
     }
 
     @Transactional
-    public void deleteJob(DeleteJobDTO deleteJobDTO) {
-        Job job = findJobById(deleteJobDTO.getId());
+    public JobDTO deleteJob(String jobId) {
+        Job job = findJobById(jobId);
         job.setDeleted(true);
         jobRepository.save(job);
+        return jobMapper.JobtoJobDTO(job);
     }
 
-    public Page<ReviewDTO> getReviewsByUserOffering(String userCustomerEmail, Pageable pageable) {
-        List<Job> jobs = jobRepository.findByUserOfferingEmail(userCustomerEmail, pageable);
-        List<ReviewDTO> reviewDTOs = jobMapper.ReviewListToReviewDTOList(jobs, userCustomerEmail);
+    public Page<ReviewDTO> getReviewsByUserOffering(String userOfferingEmail, Pageable pageable) {
+        List<Job> jobs = jobRepository.findByUserOfferingEmailAndReviewIsNotNull(userOfferingEmail);
+        List<ReviewDTO> reviewDTOs = jobMapper.ReviewListToReviewDTOList(jobs, userOfferingEmail);
         return new PageImpl<>(reviewDTOs, pageable, jobs.size());
     }
 
@@ -85,14 +81,48 @@ public class JobService {
     // esten disponibles
     // (status = false) y no esten eliminados (deleted = false)
 
-    public Page<JobDTO> getAllJobs(List<CategorieDTO> categories, Pageable pageable) {
-        List<Category> categoryList = categoryService.getAllCategories(categories);
+    public Page<JobDTO> getAllJobs(Pageable pageable, String userOfferingEmail) {
+        List<Category> categoryList = userOfferingService.getUserOffering(userOfferingEmail).getUserCategories();
         List<Job> jobs = new ArrayList<>();
         for (Category category : categoryList) {
-            jobs.addAll(jobRepository.findByCategoryAndStatusFalseAndDeletedFalse(category));
+            jobs.addAll(
+                    jobRepository.findByCategoriesAndUserOfferingEmail(userOfferingEmail, category.getCategoryName()));
         }
-        List<JobDTO> jobDTOs = jobMapper.JobListToJobDTOList(jobs);
-        return new PageImpl<>(jobDTOs, pageable, jobs.size());
+        Page<JobDTO> jobDTOsPage = new PageImpl<>(jobMapper.JobListToJobDTOList(jobs), pageable, jobs.size());
+        return jobDTOsPage;
+
     }
 
+    public Page<JobDTO> getAllHistorialJobsByUserCustomerEmail(String userCustomerEmail, Pageable pageable) {
+        UserCustomer userCustomer = userCustomerService.getUserCustomer(userCustomerEmail);
+        Page<Job> jobsPage = jobRepository
+                .findAll(JobSpecifications.findByUserCustomerEmailAndStatusIsTrue(userCustomer.getUserCustomerId()),
+                        pageable);
+        Page<JobDTO> jobDTOsPage = jobsPage.map(jobMapper::JobtoJobDTO);
+
+        return jobDTOsPage;
+    }
+
+    public Page<JobDTO> getAllActiveJobsByUserCustomerEmail(String userCustomerEmail, Pageable pageable) {
+        UserCustomer userCustomer = userCustomerService.getUserCustomer(userCustomerEmail);
+        Page<Job> jobsPage = jobRepository
+                .findAll(
+                        JobSpecifications.findByUserCustomerEmailAndStatusIsFalse(
+                                userCustomer.getUserCustomerId()),
+                        pageable);
+        Page<JobDTO> jobDTOsPage = jobsPage.map(jobMapper::JobtoJobDTO);
+
+        return jobDTOsPage;
+    }
+
+    public Page<JobDTO> getAllHistorialJobsByUserOfferingEmail(String userOfferingEmail, Pageable pageable) {
+        Page<Job> jobsPage = jobRepository
+                .findAll(JobSpecifications.findHistorialForUserOffering(userOfferingEmail), pageable);
+        // List<Job> jobsList = jobRepository
+        // .findHistorialJobsApplicationsByUserOfferingEmail(userOfferingEmail);
+        // Page<Job> jobsPage = new PageImpl<>(jobsList, pageable, jobsList.size());
+
+        Page<JobDTO> jobDTOsPage = jobsPage.map(jobMapper::JobtoJobDTO);
+        return jobDTOsPage;
+    }
 }
