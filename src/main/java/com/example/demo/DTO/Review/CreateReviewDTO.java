@@ -7,8 +7,8 @@ import lombok.Setter;
 @Setter
 public class CreateReviewDTO {
     private String jobId;
-    private String userEmailReviewer; // user that is reviewing
-    private String userEmailReviewed; // user that is being reviewed
-    private String text;
-    private int rating;
+    private String userEmailReviewer; // user that is reviewing // CHECK
+    private String userEmailReviewed; // user that is being reviewed // CHECK
+    private String text; // CHECK
+    private int rating; // CHECK
 }
