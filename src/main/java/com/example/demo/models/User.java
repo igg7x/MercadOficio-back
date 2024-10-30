@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.example.demo.auth.Roles;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -62,6 +63,7 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserOffering userOffering;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "user")
     private UserCustomer userCustomer;
 
