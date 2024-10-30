@@ -27,6 +27,8 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/api/v1/email/**").permitAll()
                         .requestMatchers("/api/v1/users/public/**").permitAll()
                         .requestMatchers("/api/v1/users-customers/public/**").permitAll()
                         .requestMatchers("/api/v1/users-offerings/public/**").permitAll()
@@ -37,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/jobs/**").authenticated()
                         .requestMatchers("/api/v1/categories/**").authenticated()
                         .requestMatchers("/api/v1/reviews/**").authenticated()
+                        .requestMatchers("/api/v1/notifications/**").authenticated()
 
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2
