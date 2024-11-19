@@ -95,6 +95,18 @@ public class NotificationService {
         return notificationDTOPage;
     }
 
+    public void markAsRead(String email, List<String> notificationsIds) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
+        List<NotificationsUsers> notificationsUsers = notificationsUsersRepository.findAll(
+                NotificationsSpecifications.getNotificationsByUserIdAndId(user.getUserId(), notificationsIds));
+
+        notificationsUsers.forEach(notificationUser -> notificationUser.setRead_status(true));
+
+        notificationsUsersRepository.saveAll(notificationsUsers);
+
+    }
+
     // public void sendNotification(Notification notification) {
     // simpMessagingTemplate.convertAndSend("/topic/notifications", notification);
     // }

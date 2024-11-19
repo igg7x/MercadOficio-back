@@ -1,5 +1,7 @@
 package com.example.demo.controllers;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 // import org.springframework.messaging.handler.annotation.SendTo;
 // import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,6 +56,16 @@ public class NotificationController {
             return ResponseEntity.badRequest().build();
         }
 
+    }
+
+    @PatchMapping("/mark-as-read")
+    public ResponseEntity<?> markAsRead(@CurrentUserEmail String email, @RequestBody List<String> notificationsIds) {
+        try {
+            notificationService.markAsRead(email, notificationsIds);
+            return ResponseEntity.ok("Notificationes Actualizadas");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
