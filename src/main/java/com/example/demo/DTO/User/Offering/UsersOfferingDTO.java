@@ -16,7 +16,7 @@ public class UsersOfferingDTO extends UserDTO {
 
     private Double calification;
     private List<CategorieDTO> categories;
-    // private Integer experience;
+// private Integer experience;
     // private Integer price;
     // private Time workDayStart;
     // private Time workDayEnd;

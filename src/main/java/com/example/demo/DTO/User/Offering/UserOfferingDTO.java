@@ -18,5 +18,6 @@ public class UserOfferingDTO extends UserDTO {
     // private Integer price;
     // private Time workDayStart;
     // private Time workDayEnd;
+    private Integer calification;
     private List<CategorieDTO> categories;
 }
