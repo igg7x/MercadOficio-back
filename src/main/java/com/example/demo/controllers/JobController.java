@@ -70,11 +70,11 @@ public class JobController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<JobDTO> updateJob(@PathVariable String id, @Validated @RequestBody UpdateJobDTO jobDTO) {
-        try {
-            return ResponseEntity.ok(jobService.updateJob(id, jobDTO));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // try {
+        return ResponseEntity.ok(jobService.updateJob(id, jobDTO));
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @PutMapping("/delete/{jobId}")

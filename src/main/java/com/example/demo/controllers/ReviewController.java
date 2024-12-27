@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
+import com.example.demo.DTO.Review.DeleteReviewDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
+import com.example.demo.DTO.Review.UpdateReviewDTO;
 import com.example.demo.services.ReviewService;
 
 @RestController
@@ -30,22 +33,25 @@ public class ReviewController {
     @GetMapping("/get/{email}")
     private ResponseEntity<Page<ReviewDTO>> getReviewsByUserReviewedEmail(@PathVariable String email,
             Pageable pageable) {
-
-        // try {
         return ResponseEntity.ok(reviewService.getReviewsByUserReviewed(email, pageable));
-        // } catch (Exception e) {
-        // return ResponseEntity.badRequest().build();
-        // }
     }
 
     @PostMapping("/create")
     private ResponseEntity<ReviewDTO> createReview(@Validated @RequestBody CreateReviewDTO createReviewDTO) {
-        try {
-            return ResponseEntity.ok(reviewService.createReview(createReviewDTO));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(reviewService.createReview(createReviewDTO));
+    }
 
+    @PatchMapping("/update")
+    private ResponseEntity<ReviewDTO> updateReview(
+            @Validated @RequestBody UpdateReviewDTO updateReviewDTO) {
+        return ResponseEntity.ok(reviewService.updateReview(updateReviewDTO));
+
+    }
+
+    @PatchMapping("/delete")
+    private ResponseEntity<Void> deleteReview(@Validated @RequestBody DeleteReviewDTO deleteReviewDTO) {
+        reviewService.deleteReview(deleteReviewDTO);
+        return ResponseEntity.ok().build();
     }
 
 }

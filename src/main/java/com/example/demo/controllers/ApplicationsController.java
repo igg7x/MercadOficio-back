@@ -29,12 +29,12 @@ public class ApplicationsController {
 
     @PostMapping("/{jobId}")
     public ResponseEntity<Void> applyJob(@PathVariable String jobId, @CurrentUserEmail String userOfferingEmail) {
-        try {
-            applyJobsService.applyJob(jobId, userOfferingEmail);
-            return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // try {
+        applyJobsService.applyJob(jobId, userOfferingEmail);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @GetMapping("/job/{jobId}")

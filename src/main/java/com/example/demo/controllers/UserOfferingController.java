@@ -74,4 +74,5 @@ public class UserOfferingController {
         return ResponseEntity.ok(userOfferingService.updateUserOffering(email,
                 userOfferingDTO));
     }
+
 }

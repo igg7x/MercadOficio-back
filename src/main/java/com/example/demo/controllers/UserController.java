@@ -1,5 +1,6 @@
 package com.example.demo.controllers;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
@@ -23,25 +24,42 @@ import com.example.demo.DTO.User.UserDTO;
 import com.example.demo.Exceptions.UserNotFoundException;
 import com.example.demo.auth.CurrentUserEmail;
 import com.example.demo.models.User;
+
 import com.example.demo.services.UserService;
+
+import lombok.AllArgsConstructor;
 
 @RestController
 @RequestMapping("/api/v1/users")
 @EnableMethodSecurity
 @CrossOrigin(origins = "*")
+@AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
     @GetMapping("/private/{email}")
-    private ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+    private ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email, Principal principal) {
         try {
-            return ResponseEntity.ok(userService.getUserByEmail(email));
-        } catch (Exception e) {
+            UserDTO user = userService.getUserByEmail(email);
+
+            // if (user != null) {
+            // Notification noti = notificationService.createNotification(
+            // "Se ha consultado tu perfil",
+            // TypesNotification.INFO,
+            // "Tu perfil ha sido consultado por otro usuario",
+            // user.getEmail());
+
+            // // notificationService.sendNotification(noti);
+            // // notificationService.sendPrivateNotification(noti, user.getEmail());
+            // return ResponseEntity.ok(user);
+            // } else {
+            // return ResponseEntity.notFound().build();
+            // }
+            return ResponseEntity.ok(user);
+        } catch (
+
+        Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -95,20 +113,34 @@ public class UserController {
         }
     }
 
-    @GetMapping("/private/{reporterEmail}/report/{reportedEmail}")
+    @GetMapping("/private/report/{reportedEmail}")
     public ResponseEntity<Boolean> isUserReported(
-            @PathVariable String reporterEmail,
+            @CurrentUserEmail String reporterEmail,
             @PathVariable String reportedEmail) {
-        // try {
-        User user = userService.findByEmail(reporterEmail);
-        User userReported = userService.findByEmail(reportedEmail);
-        boolean exists = userService.isUserAlreadyReported(user, userReported);
-        return ResponseEntity.ok(exists);
-        // } catch (UserNotFoundException e) {
-        // return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        // } catch (Exception e) {
-        // return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        // }
+        try {
+            User user = userService.findByEmail(reporterEmail);
+            User userReported = userService.findByEmail(reportedEmail);
+            boolean exists = userService.isUserAlreadyReported(user, userReported);
+            return ResponseEntity.ok(exists);
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PostMapping("/createnotification")
+    public ResponseEntity<Void> createNotification(@CurrentUserEmail String email) {
+        try {
+            // Notification noti = notificationService.createNotification("Hola soy una
+            // notificacion",
+            // TypesNotification.SUCCESS,
+            // "Mensaje de prueba", email);
+            // notificationService.sendPrivateNotification(noti, email);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
