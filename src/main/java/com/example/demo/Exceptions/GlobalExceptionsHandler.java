@@ -23,6 +23,39 @@ public class GlobalExceptionsHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(ReviewRatingException.class)
+    public ResponseEntity<ErrorObject> handleReviewRatingException(ReviewRatingException e, WebRequest request) {
+
+        ErrorObject error = new ErrorObject();
+        error.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        error.setMessage(e.getMessage());
+        error.setTimestamp(new Date());
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(JobNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleJobNotFoundException(JobNotFoundException e, WebRequest request) {
+
+        ErrorObject error = new ErrorObject();
+        error.setStatusCode(HttpStatus.NOT_FOUND.value());
+        error.setMessage(e.getMessage());
+        error.setTimestamp(new Date());
+
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReviewExistsException.class)
+    public ResponseEntity<ErrorObject> handleReviewAlreadyExitsException(ReviewExistsException e, WebRequest request) {
+
+        ErrorObject error = new ErrorObject();
+        error.setStatusCode(HttpStatus.CONFLICT.value());
+        error.setMessage(e.getMessage());
+        error.setTimestamp(new Date());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler()
     public ResponseEntity<ErrorObject> handleReportAlreadyExitsException(Exception e, WebRequest request) {
 
