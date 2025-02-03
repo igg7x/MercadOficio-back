@@ -22,5 +22,6 @@ public class UserDTO {
     private String picture;
     private String biography;
     private String location;
+    private Boolean isBanned;
     private Set<Roles> roles;
 }
