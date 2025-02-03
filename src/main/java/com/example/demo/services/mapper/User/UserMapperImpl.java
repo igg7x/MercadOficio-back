@@ -1,8 +1,10 @@
 package com.example.demo.services.mapper.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
+import com.example.demo.DTO.User.UserListDTO;
 import com.example.demo.DTO.User.Customer.UserCustomerDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
@@ -36,6 +39,7 @@ public class UserMapperImpl implements UserMapper {
         userDTO.setLocation(user.getLocation());
         userDTO.setPhone(user.getPhone());
         userDTO.setRoles(user.getRoles());
+        userDTO.setIsBanned(user.getIsBanned());
         return userDTO;
     }
 
@@ -98,6 +102,7 @@ public class UserMapperImpl implements UserMapper {
         userOfferingDTO.setCategories(categories);
         userOfferingDTO.setPhone(user.getPhone());
         userOfferingDTO.setRoles(user.getRoles());
+        userOfferingDTO.setCalification(user.getUserOffering().getCalification());
         return userOfferingDTO;
     }
 
@@ -177,6 +182,29 @@ public class UserMapperImpl implements UserMapper {
         userCustomerDTO.setPhone(userCustomer.getUser().getPhone());
         userCustomerDTO.setRoles(userCustomer.getUser().getRoles());
         return userCustomerDTO;
+    }
+
+    @Override
+    public UserListDTO UsertoUserListDTO(User user) {
+        UserListDTO userDTO = new UserListDTO();
+        userDTO.setName(user.getName().concat(" ").concat(user.getSurname()));
+        userDTO.setEmail(user.getEmail());
+        userDTO.setRoles(user.getRoles());
+        userDTO.setIsBanned(user.getIsBanned());
+        return userDTO;
+    }
+
+    @Override
+    public User deleteUser(User user) {
+        user.setDeleteAt(Date.from(java.time.Instant.now()));
+        user.setName("Usuario Eliminado");
+        user.setSurname("");
+        user.setEmail("eliminado" + UUID.randomUUID() + "@email.com");
+        user.setPicture("");
+        user.setLocation("");
+        user.setPhone(0L);
+        user.setBiography("");
+        return user;
     }
 
 }

@@ -11,6 +11,7 @@ import com.example.demo.DTO.Categories.CategorieDTO;
 import com.example.demo.DTO.User.CreateUserDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
+import com.example.demo.DTO.User.UserListDTO;
 import com.example.demo.DTO.User.Customer.UserCustomerDTO;
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
@@ -28,7 +29,11 @@ public interface UserMapper {
 
         UserDTO UsertoUserDTO(User user);
 
+        UserListDTO UsertoUserListDTO(User user);
+
         User CreateUserDTOtoUser(CreateUserDTO createUserDTO);
+
+        User deleteUser(User user);
 
         @BeanMapping(nullValuePropertyMappingStrategy = org.mapstruct.NullValuePropertyMappingStrategy.IGNORE)
         User updateUserFromDTO(UpdateUserDTO updateUserDTO, @MappingTarget User user);
