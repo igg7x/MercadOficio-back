@@ -35,8 +35,8 @@ public class UserOffering {
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User user;
 
-    @Column(nullable = true, columnDefinition = "float default 0.0")
-    private Double calification; // this is the average mark of the user
+    @Column(nullable = true, columnDefinition = "INT default 0")
+    private Integer calification; // this is the average mark of the user
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinTable(name = "userOfferingCategories", joinColumns = @JoinColumn(name = "userOfferingId"), inverseJoinColumns = @JoinColumn(name = "categoryId"))

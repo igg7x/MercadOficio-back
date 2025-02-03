@@ -1,5 +1,6 @@
 package com.example.demo.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -19,9 +20,10 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Report {
 
-    public Report(User user, User userReported) {
+    public Report(User user, User userReported, Boolean reportStatus) {
         this.reporterUserId = user;
         this.reportedUserId = userReported;
+        this.reportStatus = reportStatus;
     }
 
     @Id
@@ -31,6 +33,9 @@ public class Report {
     @ManyToOne
     @JoinColumn(name = "reporterUserId", referencedColumnName = "userId", nullable = false)
     private User reporterUserId;
+
+    @Column(nullable = false, columnDefinition = "tinyint default 1")
+    private Boolean reportStatus;
 
     @ManyToOne
     @JoinColumn(name = "reportedUserId", referencedColumnName = "userId", nullable = false)

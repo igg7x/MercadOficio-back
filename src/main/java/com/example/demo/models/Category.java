@@ -29,6 +29,9 @@ public class Category {
     @Column(length = 64, nullable = false, unique = true)
     private String categoryName;
 
+    @Column(nullable = false, columnDefinition = "tinyint default 0")
+    private Boolean categoryStatus;
+
     @OneToMany(mappedBy = "category")
     private Set<Job> job;
 
