@@ -11,10 +11,19 @@ public class ReviewSpecifications {
         return (root, query, criteriaBuilder) -> {
             return criteriaBuilder.and(
                     criteriaBuilder.equal(root.get("userReviewed").get("userId"), userReviewedId),
-                    criteriaBuilder.isNull(root.get("deletedAt")));
+                    criteriaBuilder.isNull(root.get("deleted_at")));
+        };
+    }
+
+    public static Specification<Review> findByUserReviewerAndUserReviewedAndJobId(Long userReviewerId,
+            Long userReviewedId, String jobId) {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("job").get("jobId"), jobId),
+                    criteriaBuilder.equal(root.get("userReviewer").get("userId"), userReviewerId),
+                    criteriaBuilder.equal(root.get("userReviewed").get("userId"), userReviewedId),
+                    criteriaBuilder.isNull(root.get("deleted_at")));
+
         };
     }
 }
-
-// userReviewed
-// userReviewedId

@@ -20,6 +20,14 @@ public class JobSpecifications {
         };
     }
 
+    public static Specification<Job> findByCategoryAndStatusIsFalse(String categoryName) {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("category").get("categoryName"), categoryName),
+                    criteriaBuilder.equal(root.get("deleted"), false));
+        };
+    }
+
     // public static Specification<Job> findByCategoriesAndUserOfferingEmail(String
     // userOfferingEmail,
     // Category category) {
@@ -45,6 +53,18 @@ public class JobSpecifications {
     // return builder.and(categoryPredicate, jobNotAppliedPredicate);
     // };
     // }
+
+    public static Specification<Job> findByUserCustomerEmailAndStatusIsFalse(Long userCustomerId,
+            String userOfferingEmail) {
+        return (root, query, criteriaBuilder) -> {
+            Join<Job, UserCustomer> join = root.join("userCustomer");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("userOfferingEmail"), userOfferingEmail),
+                    criteriaBuilder.equal(root.get("status"), false),
+                    criteriaBuilder.equal(join.get("userCustomerId"), userCustomerId),
+                    criteriaBuilder.equal(root.get("deleted"), false));
+        };
+    }
 
     public static Specification<Job> findByUserCustomerEmailAndStatusIsFalse(Long userCustomerId) {
         return (root, query, criteriaBuilder) -> {

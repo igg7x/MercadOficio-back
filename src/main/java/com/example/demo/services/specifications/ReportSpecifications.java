@@ -11,10 +11,18 @@ public class ReportSpecifications {
         return (root, query, criteriaBuilder) -> {
             Join<Report, User> reporterJoin = root.join("reporterUserId");
             Join<Report, User> reporteredJoin = root.join("reportedUserId");
-
             return criteriaBuilder.and(
                     criteriaBuilder.equal(reporterJoin.get("userId"), reporterId),
-                    criteriaBuilder.equal(reporteredJoin.get("userId"), reporteredId));
+                    criteriaBuilder.equal(reporteredJoin.get("userId"), reporteredId),
+                    criteriaBuilder.equal(root.get("reportStatus"), true));
+        };
+    }
+
+    public static Specification<Report> findByReporteredId(Long userId) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<Report, User> reporteredJoin = root.join("reportedUserId");
+            return criteriaBuilder.equal(reporteredJoin.get("userId"), userId);
         };
     }
 }

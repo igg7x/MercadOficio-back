@@ -18,6 +18,14 @@ public class UserOfferingSpecifications {
         };
     }
 
+    public static Specification<UserOffering> filterByCategory(Category category) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<UserOffering, Category> join = root.join("userCategories");
+            return criteriaBuilder.equal(join.get("categoryName"), category.getCategoryName());
+        };
+    }
+
     public static Specification<UserOffering> isNotBanned() {
 
         return (root, query, criteriaBuilder) -> {
@@ -27,11 +35,10 @@ public class UserOfferingSpecifications {
     }
 
     public static Specification<UserOffering> filterByLocation(String location) {
-
         return (root, query, criteriaBuilder) -> {
-            return criteriaBuilder.like(root.get("location"),
+            Join<UserOffering, User> join = root.join("user");
+            return criteriaBuilder.like(join.get("location"),
                     "%" + location + "%");
-            // return criteriaBuilder.equal(root.get("location"), location);
         };
     }
 
