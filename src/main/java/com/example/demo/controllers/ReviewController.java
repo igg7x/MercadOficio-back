@@ -1,7 +1,10 @@
 package com.example.demo.controllers;
 
+import java.util.Map;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,9 +52,19 @@ public class ReviewController {
     }
 
     @PatchMapping("/delete")
-    private ResponseEntity<Void> deleteReview(@Validated @RequestBody DeleteReviewDTO deleteReviewDTO) {
-        reviewService.deleteReview(deleteReviewDTO);
-        return ResponseEntity.ok().build();
+    private ResponseEntity<?> deleteReview(@Validated @RequestBody DeleteReviewDTO deleteReviewDTO) {
+        // Map<String, String> response = new HashMap<>();
+        // response.put("message", "Review deleted successfully");
+        // return ResponseEntity.ok(response);
+        try {
+            reviewService.deleteReview(deleteReviewDTO);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Reseña eliminada correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                    "message", "Ocurrió un error al actualizar la categoría",
+                    "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
+        }
     }
 
 }

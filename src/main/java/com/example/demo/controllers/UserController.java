@@ -4,6 +4,8 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.Map;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -19,8 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.User.CreateUserDTO;
+import com.example.demo.DTO.User.UpdateUserAdminDTO;
 import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
+import com.example.demo.DTO.User.UserListDTO;
 import com.example.demo.Exceptions.UserNotFoundException;
 import com.example.demo.auth.CurrentUserEmail;
 import com.example.demo.models.User;
@@ -42,24 +46,8 @@ public class UserController {
     private ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email, Principal principal) {
         try {
             UserDTO user = userService.getUserByEmail(email);
-
-            // if (user != null) {
-            // Notification noti = notificationService.createNotification(
-            // "Se ha consultado tu perfil",
-            // TypesNotification.INFO,
-            // "Tu perfil ha sido consultado por otro usuario",
-            // user.getEmail());
-
-            // // notificationService.sendNotification(noti);
-            // // notificationService.sendPrivateNotification(noti, user.getEmail());
-            // return ResponseEntity.ok(user);
-            // } else {
-            // return ResponseEntity.notFound().build();
-            // }
             return ResponseEntity.ok(user);
-        } catch (
-
-        Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
     }
@@ -82,6 +70,7 @@ public class UserController {
         }
     }
 
+    // MEN3ADPJH9ACJXYLA7VZPTTT
     @PatchMapping("/private/delete")
     private ResponseEntity<Void> deleteUser(@CurrentUserEmail String email) {
         try {
@@ -129,18 +118,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/createnotification")
-    public ResponseEntity<Void> createNotification(@CurrentUserEmail String email) {
-        try {
-            // Notification noti = notificationService.createNotification("Hola soy una
-            // notificacion",
-            // TypesNotification.SUCCESS,
-            // "Mensaje de prueba", email);
-            // notificationService.sendPrivateNotification(noti, email);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+    @GetMapping("/private/all")
+    public ResponseEntity<Page<UserListDTO>> getUsers(@CurrentUserEmail String email,
+            Pageable pageable) {
+        return ResponseEntity.ok(userService.getUsers(email, pageable));
+
+    }
+
+    @PatchMapping("/private/admin/update-user")
+    public ResponseEntity<UserDTO> updateUserByAdmin(@CurrentUserEmail String email,
+            @RequestBody UpdateUserAdminDTO userDTO) {
+        return ResponseEntity.ok(userService.updateUserByAdmin(email, userDTO));
     }
 
 }
