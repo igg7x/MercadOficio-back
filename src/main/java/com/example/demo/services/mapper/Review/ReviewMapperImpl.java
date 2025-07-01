@@ -1,89 +1,74 @@
 package com.example.demo.services.mapper.Review;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.time.LocalDate;
 
 import org.springframework.stereotype.Component;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
+import com.example.demo.DTO.Review.UpdateReviewDTO;
+import com.example.demo.Exceptions.ReviewRatingException;
+import com.example.demo.models.Job;
 import com.example.demo.models.Review;
-import com.example.demo.models.UserCustomer;
-import com.example.demo.models.UserOffering;
+import com.example.demo.models.User;
 
 @Component
 public class ReviewMapperImpl implements ReviewMapper {
 
     @Override
-    public ReviewDTO ReviewtoReviewDTO(Review review, String userEmailReviewer, String userEmailReviewed) {
+    public ReviewDTO ReviewtoReviewDTO(Review review) {
 
         ReviewDTO reviewDTO = new ReviewDTO();
         reviewDTO.setText(review.getText());
-        reviewDTO.setUserEmailReviewer(userEmailReviewer);
-        reviewDTO.setUserEmailReviewed(userEmailReviewed);
-        reviewDTO.setNum_likes(review.getNum_likes());
-        reviewDTO.setDateReview(review.getCreatedAt());
+        reviewDTO.setJobId(review.getJob().getJobId());
+        reviewDTO.setJobTitle(review.getJob().getTitle());
+        reviewDTO.setUserEmailReviewed(review.getUserReviewed().getEmail());
+        reviewDTO.setUserEmailReviewer(review.getUserReviewer().getEmail());
+        reviewDTO.setCreated_at(review.getCreated_at());
+        reviewDTO.setUserReviewer_img(review.getUserReviewer().getPicture());
+        reviewDTO.setRating(review.getRating());
         return reviewDTO;
 
     }
 
     @Override
-    public Review CreateReviewDTOtoReview(CreateReviewDTO createReviewDTO, UserCustomer userCustomer,
-            UserOffering userOffering) {
+    public Review CreateReviewDTOtoReview(CreateReviewDTO createReviewDTO, Job job,
+            User userReviewed, User userReviewer) {
 
         Review review = new Review();
+        review.setJob(job);
+        review.setUserReviewed(userReviewed);
+        review.setUserReviewer(userReviewer);
+        if (createReviewDTO.getRating() > 0 && createReviewDTO.getRating() < 6) {
+            review.setRating(createReviewDTO.getRating());
+        } else {
+            throw new ReviewRatingException("La calificacion debe ser entre 1 y 5");
+        }
         review.setText(createReviewDTO.getText());
-        review.setUserCustomer(userCustomer);
-        review.setUserOffering(userOffering);
-        review.setCreatedAt(Date.from(new Date().toInstant()));
-        review.setNum_likes(0);
+        review.setCreated_at(LocalDate.now());
         return review;
     }
 
     @Override
     public Review ReviewDTOtoReview(ReviewDTO reviewDTO) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewDTOtoReview'");
+        return null;
     }
 
     @Override
     public CreateReviewDTO ReviewtoCreateReviewDTO(Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewtoCreateReviewDTO'");
+        return null;
     }
 
     @Override
-    public Review updateReviewFromDTO(ReviewDTO reviewDTO, Review review) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateReviewFromDTO'");
-    }
+    public Review updateReview(Review review, UpdateReviewDTO updateReviewDTO) {
 
-    @Override
-    public List<ReviewDTO> ReviewstoReviewDTOs(List<Review> reviews) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'ReviewstoReviewDTOs'");
-    }
-
-    @Override
-    public List<ReviewDTO> ReviewListToReviewDTOList(List<Review> reviews, String userEmailReviewed) {
-
-        List<ReviewDTO> userOfferingReviews = new ArrayList<>();
-        for (Review review : reviews) {
-            userOfferingReviews.add(ReviewtoReviewDTO(review,
-                    review.getUserCustomer().getUser().getEmail(), userEmailReviewed));
+        if (updateReviewDTO.getRating() != null && updateReviewDTO.getRating() > 0 && updateReviewDTO.getRating() < 6) {
+            review.setRating(updateReviewDTO.getRating());
         }
-        return userOfferingReviews;
-    }
-
-    @Override
-    public ReviewDTO ReviewtoReviewDTO(Review review, String email) {
-        ReviewDTO reviewDTO = new ReviewDTO();
-        reviewDTO.setText(review.getText());
-        reviewDTO.setUserEmailReviewer(email);
-        reviewDTO.setNum_likes(review.getNum_likes());
-        reviewDTO.setDateReview(review.getCreatedAt());
-        return reviewDTO;
+        if (updateReviewDTO.getReviewText() != null) {
+            review.setText(updateReviewDTO.getReviewText());
+        }
+        return review;
     }
 
 }

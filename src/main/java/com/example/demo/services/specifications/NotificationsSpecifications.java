@@ -1,0 +1,52 @@
+package com.example.demo.services.specifications;
+
+import java.util.List;
+
+import org.springframework.data.jpa.domain.Specification;
+
+import com.example.demo.models.Notification;
+import com.example.demo.models.NotificationsUsers;
+import com.example.demo.models.User;
+
+import jakarta.persistence.criteria.Join;
+
+public class NotificationsSpecifications {
+
+    public static Specification<NotificationsUsers> getNotificationsByUserId(Long userId) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<NotificationsUsers, Notification> notificationJoin = root.join("notification");
+            Join<NotificationsUsers, User> userJoin = root.join("user");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(userJoin.get("userId"), userId),
+                    criteriaBuilder.equal(root.get("deleted"), false));
+            // criteriaBuilder.equal(root.get("read_status"), false));
+        };
+    }
+
+    public static Specification<NotificationsUsers> getNotificationsByUserIdAndId(Long userId,
+            List<String> notificationIds) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<NotificationsUsers, Notification> notificationJoin = root.join("notification");
+            Join<NotificationsUsers, User> userJoin = root.join("user");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(userJoin.get("userId"), userId),
+                    criteriaBuilder.equal(root.get("read_status"), false),
+                    criteriaBuilder.in(notificationJoin.get("notificationId")).value(notificationIds));
+        };
+    }
+
+    public static Specification<NotificationsUsers> getNotificationsByUserIdAndIdandDeletedIsFalse(Long userId,
+            List<String> notificationIds) {
+
+        return (root, query, criteriaBuilder) -> {
+            Join<NotificationsUsers, Notification> notificationJoin = root.join("notification");
+            Join<NotificationsUsers, User> userJoin = root.join("user");
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(userJoin.get("userId"), userId),
+                    criteriaBuilder.equal(root.get("deleted"), false),
+                    criteriaBuilder.in(notificationJoin.get("notificationId")).value(notificationIds));
+        };
+    }
+}

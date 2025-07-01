@@ -1,6 +1,6 @@
 package com.example.demo.DTO.Review;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import lombok.Data;
 import lombok.Getter;
@@ -10,13 +10,14 @@ import lombok.Setter;
 @Setter
 @Data
 public class ReviewDTO {
-
+    private String userReviewer_img;
+    private String jobId;
+    private String jobTitle;
     private String userEmailReviewer;
     private String userEmailReviewed;
-    private Date dateReview;
     private String text;
-    private Integer num_likes;
-
+    private LocalDate created_at;
+    private int rating;
 }
 
 // Path: src/main/java/com/example/demo/DTO/ReviewDTO.java

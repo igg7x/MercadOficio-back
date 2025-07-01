@@ -24,7 +24,7 @@ public class CategoryMapperImpl implements CategoryMapper {
     }
 
     @Override
-    public List<Category> CategoryDTOListtoCategoryList(List<CategorieDTO> categories) {
+    public List<Category> CategoryDTOListToCategoryList(List<CategorieDTO> categories) {
 
         List<Category> categoryList = new ArrayList<>();
         for (CategorieDTO categorieDTO : categories) {
@@ -40,5 +40,13 @@ public class CategoryMapperImpl implements CategoryMapper {
         CategorieDTO categorieDTO = new CategorieDTO();
         categorieDTO.setName(category.getCategoryName());
         return categorieDTO;
+    }
+
+    @Override
+    public Category CategoryDTOtoCategory(CategorieDTO categoryDTO) {
+        Category category = new Category();
+        category.setCategoryName(categoryDTO.getName());
+        category.setCategoryStatus(false);
+        return category;
     }
 }

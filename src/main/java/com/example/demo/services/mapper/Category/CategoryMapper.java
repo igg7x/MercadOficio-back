@@ -12,7 +12,9 @@ public interface CategoryMapper {
 
     List<CategorieDTO> CategoryListtoCategoryDTOList(List<Category> userCategories);
 
-    List<Category> CategoryDTOListtoCategoryList(List<CategorieDTO> categories);
+    List<Category> CategoryDTOListToCategoryList(List<CategorieDTO> categories);
 
     CategorieDTO CategorytoCategoryDTO(Category category);
+
+    Category CategoryDTOtoCategory(CategorieDTO categoryDTO);
 }

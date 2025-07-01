@@ -1,6 +1,5 @@
 package com.example.demo.DTO.User.Offering;
 
-import java.sql.Time;
 import java.util.List;
 
 import com.example.demo.DTO.Categories.CategorieDTO;
@@ -16,10 +15,5 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CreateUserOfferingDTO {
 
-    private String location;
-    private Integer experience;
-    private Integer price;
-    private Time workDayStart;
-    private Time workDayEnd;
     private List<CategorieDTO> userCategories;
 }
