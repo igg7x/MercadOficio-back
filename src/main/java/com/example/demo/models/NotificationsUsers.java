@@ -35,13 +35,16 @@ public class NotificationsUsers {
     @Column(nullable = false, columnDefinition = "tinyint default 0")
     private boolean read_status;
 
+    @Column(nullable = false, columnDefinition = "tinyint default 0")
+    private boolean deleted;
+
     public NotificationsUsers(Notification notification, User user, String jobId) {
         this.notification = notification;
         this.user = user;
         this.jobId = jobId;
         this.id = new NotificationsUsersKey(notification.getNotificationId(), user.getUserId());
         this.read_status = false;
-
+        this.deleted = false;
     }
 
 }

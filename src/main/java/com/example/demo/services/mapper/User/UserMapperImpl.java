@@ -46,10 +46,10 @@ public class UserMapperImpl implements UserMapper {
     @Override
     public User CreateUserDTOtoUser(CreateUserDTO createUserDTO) {
 
-        Set<Roles> userRoles = createUserDTO.getRoles()
-                .stream()
-                .map(Roles::valueOf)
-                .collect(Collectors.toSet());
+        // Set<Roles> userRoles = createUserDTO.getRoles()
+        // .stream()
+        // .map(Roles::valueOf)
+        // .collect(Collectors.toSet());
 
         User user = new User();
         user.setName(createUserDTO.getName());
@@ -59,7 +59,9 @@ public class UserMapperImpl implements UserMapper {
         user.setLocation(createUserDTO.getLocation());
         user.setBiography(createUserDTO.getBiography());
         user.setPhone(createUserDTO.getPhone());
-        user.setRoles(userRoles);
+        user.setIsBanned(false);
+        user.setStrikesCount(0);
+        // user.setRoles(userRoles);
         return user;
     }
 
@@ -74,6 +76,14 @@ public class UserMapperImpl implements UserMapper {
         }
         if (updateUserDTO.getPhone() != null) {
             user.setPhone(updateUserDTO.getPhone());
+        }
+        if (updateUserDTO.getNewRoles() != null) {
+            Set<Roles> userRoles = updateUserDTO.getNewRoles()
+                    .stream()
+                    .map(Enum::name)
+                    .map(Roles::valueOf)
+                    .collect(Collectors.toSet());
+            user.setRoles(userRoles);
         }
         return user;
     }
@@ -102,7 +112,13 @@ public class UserMapperImpl implements UserMapper {
         userOfferingDTO.setCategories(categories);
         userOfferingDTO.setPhone(user.getPhone());
         userOfferingDTO.setRoles(user.getRoles());
-        userOfferingDTO.setCalification(user.getUserOffering().getCalification());
+        userOfferingDTO.setIsBanned(user.getIsBanned());
+        // userOfferingDTO.setCalification(user.getUserOffering().getCalification());
+        if (user.getUserOffering() == null) {
+            userOfferingDTO.setCalification(0);
+        } else {
+            userOfferingDTO.setCalification(user.getUserOffering().getCalification());
+        }
         return userOfferingDTO;
     }
 
@@ -159,7 +175,7 @@ public class UserMapperImpl implements UserMapper {
         usersOffering.setLocation(userOffering.getUser().getLocation());
         usersOffering.setBiography(userOffering.getUser().getBiography());
         usersOffering.setPicture(userOffering.getUser().getPicture());
-        userOffering.setCalification(userOffering.getCalification());
+        usersOffering.setCalification(userOffering.getCalification());
         usersOffering.setRoles(userOffering.getUser().getRoles());
         usersOffering.setPhone(userOffering.getUser().getPhone());
         usersOffering.setCategories(userOffering.getUserCategories().stream().map(category -> {

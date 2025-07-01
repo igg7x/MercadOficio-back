@@ -28,7 +28,6 @@ import com.example.demo.DTO.User.UserListDTO;
 import com.example.demo.Exceptions.UserNotFoundException;
 import com.example.demo.auth.CurrentUserEmail;
 import com.example.demo.models.User;
-
 import com.example.demo.services.UserService;
 
 import lombok.AllArgsConstructor;
@@ -54,16 +53,18 @@ public class UserController {
 
     @PostMapping("/public/create")
     private ResponseEntity<UserDTO> createUser(@Validated @RequestBody CreateUserDTO userDTO) {
-        try {
-            return ResponseEntity.ok(userService.createUser(userDTO));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // try {
+
+        return ResponseEntity.ok(userService.createUser(userDTO));
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @PutMapping("/private/update")
     private ResponseEntity<UserDTO> updateUser(@CurrentUserEmail String email, @RequestBody UpdateUserDTO userDTO) {
         try {
+
             return ResponseEntity.ok(userService.updateUser(email, userDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
@@ -71,11 +72,16 @@ public class UserController {
     }
 
     // MEN3ADPJH9ACJXYLA7VZPTTT
-    @PatchMapping("/private/delete")
-    private ResponseEntity<Void> deleteUser(@CurrentUserEmail String email) {
+    // 64P5AKK3K9ZT73MJYEEC6BKQ
+    @PatchMapping("/private/delete/{userEmailPath}")
+    private ResponseEntity<Void> deleteUser(@PathVariable String userEmailPath, @CurrentUserEmail String email) {
         try {
-            userService.deleteUser(email);
-            return ResponseEntity.ok().build();
+            if (userEmailPath.equals(email)) {
+                userService.deleteUser(email);
+                return ResponseEntity.ok().build();
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            }
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -93,13 +99,15 @@ public class UserController {
 
     @PutMapping("/private/report")
     private ResponseEntity<Void> reportUser(@CurrentUserEmail String email,
-            @RequestBody Map<String, String> userEmailReportered) {
-        try {
-            userService.reportUser(email, userEmailReportered);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+            @RequestBody Map<String, String> report) {
+        String userEmailReportered = report.get("userEmailReportered");
+        String reportReason = report.get("reportReason");
+        // try {
+        userService.reportUser(email, userEmailReportered, reportReason);
+        return ResponseEntity.ok().build();
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @GetMapping("/private/report/{reportedEmail}")
@@ -111,7 +119,9 @@ public class UserController {
             User userReported = userService.findByEmail(reportedEmail);
             boolean exists = userService.isUserAlreadyReported(user, userReported);
             return ResponseEntity.ok(exists);
-        } catch (UserNotFoundException e) {
+        } catch (
+
+        UserNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -39,16 +39,6 @@ public class Notification {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
     private LocalDate createdAt;
 
-    // @Column(nullable = false, columnDefinition = "tinyint default 0")
-    // private boolean read_status;
-    // @ManyToOne
-    // @JoinColumn(name = "userId", referencedColumnName = "userId", nullable =
-    // false)
-    // private User userId;
-
-    // @Column(length = 64, nullable = true)
-    // private String jobId;
-
     public enum TypesNotification {
         SUCCESS,
         INFO,

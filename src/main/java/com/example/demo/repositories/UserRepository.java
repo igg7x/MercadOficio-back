@@ -24,4 +24,8 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
 
     List<User> findByEmailIn(List<String> usersEmailsToNotify);
 
+    long countByIsBannedIsFalseAndDeleteAtIsNull();
+
+    long countBydeleteAtIsNull();
+
 }

@@ -1,6 +1,6 @@
 package com.example.demo.DTO.User;
 
-import java.util.List;
+// import java.util.List;
 
 import org.springframework.lang.Nullable;
 
@@ -19,7 +19,7 @@ public class CreateUserDTO {
     private String surname;
     private String email;
     private String picture;
-    private List<String> roles;
+    // private List<String> roles;
     @Nullable
     private Long phone;
     @Nullable

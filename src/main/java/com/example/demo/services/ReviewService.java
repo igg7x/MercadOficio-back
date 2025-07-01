@@ -1,122 +1,166 @@
 package com.example.demo.services;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.Collections;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.DTO.Review.CreateReviewDTO;
+import com.example.demo.DTO.Review.DeleteReviewDTO;
 import com.example.demo.DTO.Review.ReviewDTO;
+import com.example.demo.DTO.Review.UpdateReviewDTO;
+import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
+import com.example.demo.Exceptions.JobNotFoundException;
+import com.example.demo.Exceptions.ReviewExistsException;
 import com.example.demo.models.Job;
+import com.example.demo.models.Notification;
 import com.example.demo.models.Review;
 import com.example.demo.models.User;
+import com.example.demo.models.Notification.TypesNotification;
 import com.example.demo.repositories.ReviewRepository;
 import com.example.demo.services.mapper.Review.ReviewMapper;
 import com.example.demo.services.specifications.ReviewSpecifications;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 
 @Service
+@AllArgsConstructor
 public class ReviewService {
 
-    private final ReviewRepository reviewRepository;
-    private final ReviewMapper reviewMapper;
-    private final UserService userService;
-    private final JobService jobService;
+        private final ReviewRepository reviewRepository;
+        private final ReviewMapper reviewMapper;
+        private final UserService userService;
+        private final JobService jobService;
+        private final NotificationService notificationService;
+        private final UserOfferingService userOfferingService;
 
-    public ReviewService(ReviewRepository reviewRepository, ReviewMapper reviewMapper, UserService userService,
-            JobService jobService) {
-        this.reviewRepository = reviewRepository;
-        this.reviewMapper = reviewMapper;
-        this.userService = userService;
-        this.jobService = jobService;
-    }
+        public Page<ReviewDTO> getReviews(String userEmailReviewer,
+                        Pageable pageable, String searchFilter) {
+                User user = userService.findByEmail(userEmailReviewer);
+                Page<Review> reviews = reviewRepository
+                                .findAll(ReviewSpecifications.findReviews(user.getUserId(), searchFilter),
+                                                pageable);
 
-    public Page<ReviewDTO> getReviewsByUserReviewed(String userEmailReviewed,
-            Pageable pageable) {
-        User user = userService.findByEmail(userEmailReviewed);
-        Page<Review> reviews = reviewRepository
-                .findAll(ReviewSpecifications.findByUserReviewedIdAndDeletedIsNull(user.getUserId()), pageable);
+                Page<ReviewDTO> reviewsDTOPage = reviews.map(
+                                review -> reviewMapper.ReviewtoReviewDTO(review));
+                return reviewsDTOPage;
+        }
 
-        Page<ReviewDTO> reviewsDTOPage = reviews.map(
-                review -> reviewMapper.ReviewtoReviewDTO(review));
-        return reviewsDTOPage;
-    }
+        @Transactional
+        public ReviewDTO createReview(CreateReviewDTO createReviewDTO) {
 
-    @Transactional
-    public ReviewDTO createReview(CreateReviewDTO createReviewDTO) {
+                User userReviewer = userService.findByEmail(createReviewDTO.getUserEmailReviewer());
 
-        User userReviewer = userService.findByEmail(createReviewDTO.getUserEmailReviewer());
+                User userReviewed = userService.findByEmail(createReviewDTO.getUserEmailReviewed());
 
-        User userReviewed = userService.findByEmail(createReviewDTO.getUserEmailReviewed());
+                Job jobToReview = jobService.findJobById(createReviewDTO.getJobId());
 
-        Job jobToReview = jobService.findJobById(createReviewDTO.getJobId());
-        Review reviewCreated = reviewMapper.CreateReviewDTOtoReview(createReviewDTO, jobToReview, userReviewed,
-                userReviewer);
-        ;
+                if (userReviewer.getUserId().equals(userReviewed.getUserId())) {
+                        throw new org.springframework.web.client.HttpClientErrorException(
+                                        org.springframework.http.HttpStatus.BAD_REQUEST,
+                                        "User can't review himself");
+                }
 
-        reviewCreated = reviewRepository.save(reviewCreated);
+                if (reviewRepository.findOne(ReviewSpecifications.findByUserReviewerAndUserReviewedAndJobId(
+                                userReviewer.getUserId(), userReviewed.getUserId(), jobToReview.getJobId()))
+                                .isPresent()) {
+                        throw new ReviewExistsException("La reseña ya existe");
+                }
 
-        return reviewMapper.ReviewtoReviewDTO(reviewCreated);
-    }
+                Review reviewCreated = createAndSaveReview(createReviewDTO, jobToReview,
+                                userReviewed, userReviewer);
 
-    // @Transactional
-    // public ReviewDTO createReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
+                if (jobToReview.getUserCustomer().getUser().getUserId().equals(userReviewer.getUserId())) {
+                        UpdateUserOfferingDTO updateUserOfferingDTO = new UpdateUserOfferingDTO();
 
-    // UserCustomer userCustomer =
-    // userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
+                        updateUserOfferingDTO.setCalification(createReviewDTO.getRating());
 
-    // Review review =
-    // reviewRepository.findById(createReviewLikeDTO.getReviewId()).get();
+                        userOfferingService.updateUserOffering(userReviewed.getEmail(), updateUserOfferingDTO);
+                }
 
-    // List<UserCustomer> reviewsLikes = review.getReviewLikes();
-    // reviewsLikes.add(userCustomer);
-    // review.setReviewLikes(reviewsLikes);
+                notifyUserReview(userReviewer, userReviewed, jobToReview);
+                return reviewMapper.ReviewtoReviewDTO(reviewCreated);
+        }
 
-    // List<Review> userLikes = userCustomer.getUserCustomerLikes();
-    // userLikes.add(review);
-    // userCustomer.setUserCustomerLikes(userLikes);
+        private void notifyUserReview(User userReviewer, User userReviewed, Job jobToReview) {
 
-    // review = reviewRepository.save(review);
-    // userCustomerRepository.save(userCustomer);
+                String reviewMessage = String.format("El usuario: %s te ha reseñado en el trabajo: %s",
+                                userReviewer.getEmail(), jobToReview.getTitle());
 
-    // return reviewMapper.ReviewtoReviewDTO(review,
-    // createReviewLikeDTO.getEmail());
-    // }
+                // emailService.sendEmail(userReviewed.getEmail(), "Te han Reseñado !",
+                // reviewMessage);
 
-    // @Transactional
-    // public ReviewDTO deleteReviewLike(CreateReviewLikeDTO createReviewDTO) {
+                Notification notificationReview = notificationService.createNotification("Te han Reseñado !",
+                                TypesNotification.INFO, reviewMessage);
 
-    // UserCustomer userCustomer =
-    // userCustomerService.getUserCustomer(createReviewDTO.getEmail());
+                notificationService.sendNotifications(Collections.singletonList(userReviewed.getEmail()),
+                                notificationReview, null);
+                ;
 
-    // Review review =
-    // reviewRepository.findById(createReviewDTO.getReviewId()).get();
+        }
 
-    // List<UserCustomer> reviewsLikes = review.getReviewLikes();
-    // reviewsLikes.remove(userCustomer);
-    // review.setReviewLikes(reviewsLikes);
+        private Review createAndSaveReview(CreateReviewDTO createReviewDTO, Job jobToReview, User userReviewed,
+                        User userReviewer) {
+                Review reviewCreated = reviewMapper.CreateReviewDTOtoReview(createReviewDTO, jobToReview, userReviewed,
+                                userReviewer);
+                ;
+                return reviewRepository.save(reviewCreated);
+        }
 
-    // List<Review> userLikes = userCustomer.getUserCustomerLikes();
-    // userLikes.remove(review);
-    // userCustomer.setUserCustomerLikes(userLikes);
+        public Integer getReviewCount(User user) {
+                Long count = reviewRepository
+                                .count(ReviewSpecifications.findByUserReviewedIdAndDeletedIsNull(user.getUserId()));
 
-    // review = reviewRepository.save(review);
+                return count.intValue();
+        }
 
-    // return reviewMapper.ReviewtoReviewDTO(review, createReviewDTO.getEmail());
-    // }
+        @Transactional
+        public ReviewDTO updateReview(UpdateReviewDTO updateReviewDTO) {
+                User userReviewed = userService.findByEmail(updateReviewDTO.getUserReviewedEmail());
+                User userReviwer = userService.findByEmail(updateReviewDTO.getUserReviewerEmail());
+                Job job = jobService.findJobById(updateReviewDTO.getJobId());
 
-    // @Transactional
-    // public void deleteReview() {
-    // // THIS METHOD WILL BE IMPLEMENTED WHEN THE MODULE OF SECURYTY IS IMPLEMENTED
+                Review review = reviewRepository
+                                .findOne(ReviewSpecifications.findByUserReviewerAndUserReviewedAndJobId(
+                                                userReviwer.getUserId(), userReviewed.getUserId(), job.getJobId()))
+                                .orElseThrow(() -> new JobNotFoundException("Reseña no encontrada"));
+                Review reviewUpdated = reviewMapper.updateReview(review, updateReviewDTO);
+                return reviewMapper.ReviewtoReviewDTO(reviewRepository.save(reviewUpdated));
 
-    // }
+        }
 
-    // public boolean existsReviewLike(CreateReviewLikeDTO createReviewLikeDTO) {
-    // UserCustomer userCustomer =
-    // userCustomerService.getUserCustomer(createReviewLikeDTO.getEmail());
-    // return
-    // reviewRepository.existsByReviewIdAndReviewLikesUserCustomerId(createReviewLikeDTO.getReviewId(),
-    // userCustomer.getUserCustomerId());
-    // }
+        @Transactional
+        public void deleteReview(DeleteReviewDTO deleteReviewDTO) {
+                User userReviewed = userService.findByEmail(deleteReviewDTO.getUserReviewedEmail());
+                User userReviwer = userService.findByEmail(deleteReviewDTO.getUserReviewerEmail());
+                Job job = jobService.findJobById(deleteReviewDTO.getJobId());
+
+                Review review = reviewRepository
+                                .findOne(ReviewSpecifications.findByUserReviewerAndUserReviewedAndJobId(
+                                                userReviwer.getUserId(), userReviewed.getUserId(), job.getJobId()))
+                                .orElseThrow(() -> new JobNotFoundException("Reseña no encontrada"));
+
+                review.setDeleted_at(java.time.LocalDate.now());
+                reviewRepository.save(review);
+                notifyDeletingReview(userReviwer, userReviewed, job);
+        }
+
+        private void notifyDeletingReview(User userReviewer, User userReviewed, Job jobToReview) {
+                String reviewMessage = String.format("El usuario: %s ha eliminado su reseña en el trabajo: %s",
+                                userReviewer.getEmail(), jobToReview.getTitle());
+
+                // emailService.sendEmail(userReviewed.getEmail(), "Te han Reseñado !",
+                // reviewMessage);
+
+                Notification notificationReview = notificationService.createNotification("Se ha eliminado una reseña !",
+                                TypesNotification.INFO, reviewMessage);
+
+                notificationService.sendNotifications(Collections.singletonList(userReviewed.getEmail()),
+                                notificationReview, null);
+                ;
+        }
 
 }

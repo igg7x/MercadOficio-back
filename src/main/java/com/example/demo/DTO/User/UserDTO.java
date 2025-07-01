@@ -23,5 +23,6 @@ public class UserDTO {
     private String biography;
     private String location;
     private Boolean isBanned;
+    private Boolean isDeleted;
     private Set<Roles> roles;
 }

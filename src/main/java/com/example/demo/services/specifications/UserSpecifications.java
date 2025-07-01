@@ -11,4 +11,8 @@ public class UserSpecifications {
             return criteriaBuilder.isNull(root.get("deleteAt"));
         };
     }
+
+
+
+
 }

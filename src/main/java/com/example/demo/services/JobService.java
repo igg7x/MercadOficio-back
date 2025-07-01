@@ -2,22 +2,28 @@ package com.example.demo.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+// import java.util.Set;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import com.example.demo.DTO.Job.CreateJobDTO;
 import com.example.demo.DTO.Job.JobDTO;
 import com.example.demo.DTO.Job.UpdateJobDTO;
-import com.example.demo.DTO.Review.ReviewDTO;
+import com.example.demo.Exceptions.JobNotFoundException;
 import com.example.demo.models.Category;
 import com.example.demo.models.Job;
+import com.example.demo.models.Notification;
+import com.example.demo.models.Notification.TypesNotification;
+import com.example.demo.models.Review;
 import com.example.demo.models.UserCustomer;
+import com.example.demo.models.UserOffering;
 import com.example.demo.repositories.JobRepository;
+import com.example.demo.repositories.ReviewRepository;
 import com.example.demo.services.mapper.Job.JobMapper;
 import com.example.demo.services.specifications.JobSpecifications;
 
@@ -32,11 +38,14 @@ public class JobService {
     private final CategoryService categoryService;
     private final JobMapper jobMapper;
     private final UserOfferingService userOfferingService;
+    // private final EmailService emailService;
+    private final NotificationService notificationService;
+    private final ReviewRepository reviewRepository;
 
     public Job findJobById(String id) {
         Job job = jobRepository.findOne(JobSpecifications.findByJobIdAndDeletedAtIsNull(id)).orElse(null);
         if (job == null) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Job not found");
+            throw new JobNotFoundException("Trabajo no encontrado");
         }
         return job;
     }
@@ -46,13 +55,41 @@ public class JobService {
         return jobMapper.JobtoJobDTO(job);
     }
 
+    public Optional<Job> getJobByUserCustomerAndUserOffering(String userCustomerEmail, String userOfferingEmail) {
+        UserCustomer userCustomer = userCustomerService.getUserCustomer(userCustomerEmail);
+        return jobRepository
+                .findOne(JobSpecifications.findByUserCustomerEmailAndStatusIsFalse(userCustomer.getUserCustomerId(),
+                        userOfferingEmail));
+    }
+
     @Transactional
-    public JobDTO createJob(CreateJobDTO createJobDTO) {
+    public JobDTO createJob(CreateJobDTO createJobDTO, String userCutomerEmail) {
+
+        // if (userCutomerEmail.equals(createJobDTO.getUserCustomerEmail())) {
+        // throw new IllegalArgumentException("Error");
+        // }
+
         UserCustomer userCustomer = userCustomerService.getUserCustomer(createJobDTO.getUserCustomerEmail());
         Category category = categoryService.getCategory(createJobDTO.getCategory());
         Job job = jobMapper.CreateJobDTOtoJob(createJobDTO, userCustomer, category);
         Job jobCreated = jobRepository.save(job);
+
+        List<UserOffering> userOfferings = userOfferingService.getUserOfferingsByCategory(category.getCategoryName(),
+                userCutomerEmail);
+        notifyUsersAboutNewJob(userOfferings, jobCreated);
         return jobMapper.JobtoJobDTO(jobCreated);
+    }
+
+    private void notifyUsersAboutNewJob(List<UserOffering> userOfferings, Job job) {
+        List<String> usersEmailsToNotify = userOfferings.stream().map(userOffering -> userOffering.getUser().getEmail())
+                .toList();
+        Notification notificationNewJob = notificationService.createNotification("Nuevo Trabajo Disponible",
+                TypesNotification.INFO, "El usuario: "
+                        + job.getUserCustomer().getUser().getEmail()
+                        + " ha publicado un nuevo trabajo en la categoria: "
+                        + job.getCategory().getCategoryName());
+
+        notificationService.sendNotifications(usersEmailsToNotify, notificationNewJob, job.getJobId());
     }
 
     @Transactional
@@ -68,15 +105,29 @@ public class JobService {
         Job job = findJobById(jobId);
         job.setDeleted(true);
         jobRepository.save(job);
+        Set<Review> reviews = job.getReviews();
+        for (Review review : reviews) {
+            review.setDeleted_at(java.time.LocalDate.now());
+            reviewRepository.save(review);
+        }
+        // Set<ApplyJobs> applications = job.getApplyJobs();
+        // for (ApplyJobs application : applications) {
+        // emailService.sendEmail(application.getUserOffering().getUser().getEmail(),
+        // "Trabajo Eliminado",
+        // "El trabajo: " + job.getTitle() + " ha sido eliminado por el usuario: "
+        // + job.getUserCustomer().getUser().getEmail());
+        // }
         return jobMapper.JobtoJobDTO(job);
     }
 
-    public Page<ReviewDTO> getReviewsByUserOffering(String userOfferingEmail, Pageable pageable) {
-        List<Job> jobs = jobRepository.findByUserOfferingEmailAndReviewIsNotNull(userOfferingEmail);
-        List<ReviewDTO> reviewDTOs = jobMapper.ReviewListToReviewDTOList(jobs, userOfferingEmail);
-        return new PageImpl<>(reviewDTOs, pageable, jobs.size());
-    }
-
+    // public Page<ReviewDTO> getReviewsByUserOffering(String userOfferingEmail,
+    // Pageable pageable) {
+    // List<Job> jobs =
+    // jobRepository.findByUserOfferingEmailAndReviewIsNotNull(userOfferingEmail);
+    // List<ReviewDTO> reviewDTOs = jobMapper.ReviewListToReviewDTOList(jobs,
+    // userOfferingEmail);
+    // return new PageImpl<>(reviewDTOs, pageable, jobs.size());
+    // }
     // Obtengo todos los JOBS que tengan las categorias que se pasan por parametro y
     // esten disponibles
     // (status = false) y no esten eliminados (deleted = false)
@@ -124,5 +175,13 @@ public class JobService {
 
         Page<JobDTO> jobDTOsPage = jobsPage.map(jobMapper::JobtoJobDTO);
         return jobDTOsPage;
+    }
+
+    public long getJobsCountByCategory(String category) {
+        return jobRepository.count(JobSpecifications.findByCategoryAndStatusIsFalse(category));
+    }
+
+    public long countTotalActiveJobs() {
+        return jobRepository.count(JobSpecifications.findByStatusIsFalse());
     }
 }

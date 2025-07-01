@@ -31,7 +31,7 @@ public class ApplicationsController {
     public ResponseEntity<Void> applyJob(@PathVariable String jobId, @CurrentUserEmail String userOfferingEmail) {
         // try {
         applyJobsService.applyJob(jobId, userOfferingEmail);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.OK);
         // } catch (Exception e) {
         // return ResponseEntity.badRequest().build();
         // }

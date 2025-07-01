@@ -35,16 +35,6 @@ public class NotificationService {
 
     private final NotificationsUsersRepository notificationsUsersRepository;
 
-    // public NotificationService(SimpMessagingTemplate simpMessagingTemplate,
-    // NotificationsRepository notificationsRepository, UserRepository
-    // userRepository,
-    // NotificationsUsersRepository notificationsUsersRepository) {
-    // this.simpMessagingTemplate = simpMessagingTemplate;
-    // this.notificationsRepository = notificationsRepository;
-    // this.userRepository = userRepository;
-    // this.notificationsUsersRepository = notificationsUsersRepository;
-    // }
-
     public Notification createNotification(String title, TypesNotification type, String message) {
         Notification newNotification = new Notification(title, type, message);
         notificationsRepository.save(newNotification);
@@ -102,6 +92,19 @@ public class NotificationService {
                 NotificationsSpecifications.getNotificationsByUserIdAndId(user.getUserId(), notificationsIds));
 
         notificationsUsers.forEach(notificationUser -> notificationUser.setRead_status(true));
+
+        notificationsUsersRepository.saveAll(notificationsUsers);
+
+    }
+
+    public void markAsDeleted(String email, List<String> notifcicationsIds) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
+
+        List<NotificationsUsers> notificationsUsers = notificationsUsersRepository.findAll(
+                NotificationsSpecifications.getNotificationsByUserIdAndIdandDeletedIsFalse(user.getUserId(),
+                        notifcicationsIds));
+
+        notificationsUsers.forEach(notificationUser -> notificationUser.setDeleted(true));
 
         notificationsUsersRepository.saveAll(notificationsUsers);
 

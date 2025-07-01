@@ -36,7 +36,13 @@ public class ReviewController {
     @GetMapping("/get/{email}")
     private ResponseEntity<Page<ReviewDTO>> getReviewsByUserReviewedEmail(@PathVariable String email,
             Pageable pageable) {
-        return ResponseEntity.ok(reviewService.getReviewsByUserReviewed(email, pageable));
+        return ResponseEntity.ok(reviewService.getReviews(email, pageable, "userReviewed"));
+    }
+
+    @GetMapping("/get-created-by/{email}")
+    private ResponseEntity<Page<ReviewDTO>> getReviewsByUserReviewerEmail(@PathVariable String email,
+            Pageable pageable) {
+        return ResponseEntity.ok(reviewService.getReviews(email, pageable, "userReviewer"));
     }
 
     @PostMapping("/create")
@@ -62,7 +68,7 @@ public class ReviewController {
                     "message", "Reseña eliminada correctamente"));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
-                    "message", "Ocurrió un error al actualizar la categoría",
+                    "message", "Ocurrió un error al eliminar la reseña",
                     "status", HttpStatus.INTERNAL_SERVER_ERROR.value()));
         }
     }

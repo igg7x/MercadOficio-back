@@ -33,11 +33,7 @@ public class JobController {
 
     @GetMapping("/get/{id}")
     public ResponseEntity<JobDTO> getJobById(@PathVariable String id) {
-        try {
-            return ResponseEntity.ok(jobService.getJobById(id));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.ok(jobService.getJobById(id));
     }
 
     @GetMapping("/customer")
@@ -50,9 +46,10 @@ public class JobController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<JobDTO> createJob(@Validated @RequestBody CreateJobDTO jobDTO) {
+    public ResponseEntity<JobDTO> createJob(@Validated @RequestBody CreateJobDTO jobDTO,
+            @CurrentUserEmail String userCutomerEmail) {
         try {
-            return ResponseEntity.ok(jobService.createJob(jobDTO));
+            return ResponseEntity.ok(jobService.createJob(jobDTO, userCutomerEmail));
         } catch (Exception e) {
             return ResponseEntity.badRequest().build();
         }
@@ -79,12 +76,12 @@ public class JobController {
 
     @PutMapping("/delete/{jobId}")
     public ResponseEntity<JobDTO> deleteJob(@PathVariable String jobId) {
-        try {
-            jobService.deleteJob(jobId);
-            return new ResponseEntity<JobDTO>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // try {
+        jobService.deleteJob(jobId);
+        return new ResponseEntity<JobDTO>(HttpStatus.OK);
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @GetMapping("/all")

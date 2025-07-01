@@ -1,16 +1,21 @@
 package com.example.demo.services;
 
+import java.util.Set;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.example.demo.DTO.User.UpdateUserDTO;
 import com.example.demo.DTO.User.UserDTO;
+import com.example.demo.auth.Roles;
 import com.example.demo.models.User;
 import com.example.demo.models.UserCustomer;
 import com.example.demo.repositories.UserCustomerRepository;
 import com.example.demo.services.mapper.User.UserMapper;
 
 import jakarta.transaction.Transactional;
+
 
 @Service
 public class UserCustomerService {
@@ -36,6 +41,11 @@ public class UserCustomerService {
         UserCustomer userCustomer = new UserCustomer();
         userCustomer.setUser(user);
         userCustomerRepository.save(userCustomer);
+        UpdateUserDTO updateUserDTO = new UpdateUserDTO();
+        Set<Roles> roles = user.getRoles();
+        roles.add(Roles.USER_CUSTOMER);
+        updateUserDTO.setNewRoles(roles);
+        userService.updateUser(userEmail, updateUserDTO);
         return userMapper.UsertoUserDTO(user);
     }
 
@@ -54,4 +64,9 @@ public class UserCustomerService {
         }
         return userCustomer;
     }
+
+    public long getTotalUsersCustomers() {
+        return userCustomerRepository.count();
+    }   
+
 }

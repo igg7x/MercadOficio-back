@@ -1,5 +1,9 @@
 package com.example.demo.DTO.User;
 
+import java.util.Set;
+
+import com.example.demo.auth.Roles;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +14,6 @@ public class UpdateUserDTO {
     private String location;
     private String biography;
     private Long phone;
-    // @Nullable
-    // private Set<Roles> newRoles;
+    private Set<Roles> newRoles;
     // private List<CategorieDTO> userCategories;
 }

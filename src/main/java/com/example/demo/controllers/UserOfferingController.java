@@ -1,7 +1,5 @@
 package com.example.demo.controllers;
 
-import java.util.Map;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.DTO.User.Offering.CreateUserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UpdateUserOfferingDTO;
+import com.example.demo.DTO.User.Offering.UserOfferingCriteriaDTO;
 import com.example.demo.DTO.User.Offering.UserOfferingDTO;
 import com.example.demo.DTO.User.Offering.UsersOfferingDTO;
 import com.example.demo.auth.CurrentUserEmail;
@@ -45,9 +44,10 @@ public class UserOfferingController {
 
     @PostMapping("/private/search")
     private ResponseEntity<Page<UsersOfferingDTO>> getUsersOfferingByCriteria(
+            @CurrentUserEmail String email,
             Pageable pageable,
-            @RequestBody Map<String, String> searchCriteria) {
-        Page<UsersOfferingDTO> usersOfferingPage = userOfferingService.getUsersOfferingByCriteria(searchCriteria,
+            @RequestBody UserOfferingCriteriaDTO searchCriteria) {
+        Page<UsersOfferingDTO> usersOfferingPage = userOfferingService.getUsersOfferingByCriteria(email, searchCriteria,
                 pageable);
         return ResponseEntity.ok(usersOfferingPage);
     }
@@ -55,11 +55,11 @@ public class UserOfferingController {
     @PostMapping("/public/create")
     private ResponseEntity<UserOfferingDTO> createUserOffering(@CurrentUserEmail String email,
             @Validated @RequestBody CreateUserOfferingDTO userOfferingDTO) {
-        try {
-            return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        // try {
+        return ResponseEntity.ok(userOfferingService.createUserOffering(userOfferingDTO, email));
+        // } catch (Exception e) {
+        // return ResponseEntity.badRequest().build();
+        // }
     }
 
     @GetMapping("/private/{email}")

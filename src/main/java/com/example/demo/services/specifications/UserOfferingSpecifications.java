@@ -26,6 +26,13 @@ public class UserOfferingSpecifications {
         };
     }
 
+    public static Specification<UserOffering> deletedAtIsNull() {
+        return (root, query, criteriaBuilder) -> {
+            Join<UserOffering, User> join = root.join("user");
+            return criteriaBuilder.isNull(join.get("deleteAt"));
+        };
+    }
+
     public static Specification<UserOffering> isNotBanned() {
 
         return (root, query, criteriaBuilder) -> {
@@ -42,9 +49,23 @@ public class UserOfferingSpecifications {
         };
     }
 
+    public static Specification<UserOffering> excludeUser(String userCustomerEmail) {
+        return (root, query, criteriaBuilder) -> {
+            Join<UserOffering, User> join = root.join("user");
+            return criteriaBuilder.notEqual(join.get("email"), userCustomerEmail);
+        };
+    }
+
     public static Specification<UserOffering> filterByCalification(Integer minCalification, Integer maxCalification) {
         return (root, query, criteriaBuilder) -> {
-            return criteriaBuilder.between(root.get("calification"), minCalification, maxCalification);
+            if (minCalification != null && maxCalification != null) {
+                return criteriaBuilder.between(root.get("calification"), minCalification, maxCalification);
+            } else if (minCalification != null) {
+                return criteriaBuilder.greaterThanOrEqualTo(root.get("calification"), minCalification);
+            } else if (maxCalification != null) {
+                return criteriaBuilder.lessThanOrEqualTo(root.get("calification"), maxCalification);
+            }
+            return criteriaBuilder.conjunction(); // No filter applied
         };
     }
 }

@@ -27,6 +27,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
+                        .requestMatchers("/api/v1/metrics/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/v1/email/**").permitAll()
                         .requestMatchers("/api/v1/users/public/**").permitAll()
@@ -40,8 +41,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/categories/**").authenticated()
                         .requestMatchers("/api/v1/reviews/**").authenticated()
                         .requestMatchers("/api/v1/notifications/**").authenticated()
-
-                )
+                        .requestMatchers("/api/v1/users/get-users").hasRole(Roles.ADMIN.name()).anyRequest().denyAll())
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwt -> jwt
                                 .decoder(jwtDecoder())))

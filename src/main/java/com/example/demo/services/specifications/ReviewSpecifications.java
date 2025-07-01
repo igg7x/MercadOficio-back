@@ -15,6 +15,16 @@ public class ReviewSpecifications {
         };
     }
 
+    public static Specification<Review> findReviews(Long userId, String searchFilter) {
+
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get(searchFilter).get("userId"), userId),
+                    criteriaBuilder.isNull(root.get("deleted_at")));
+        };
+
+    }
+
     public static Specification<Review> findByUserReviewerAndUserReviewedAndJobId(Long userReviewerId,
             Long userReviewedId, String jobId) {
         return (root, query, criteriaBuilder) -> {

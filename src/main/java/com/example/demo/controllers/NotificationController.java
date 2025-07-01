@@ -68,4 +68,14 @@ public class NotificationController {
         }
     }
 
+    @PatchMapping("/mark-as-deleted")
+    public ResponseEntity<?> markAsDeleted(@CurrentUserEmail String email, @RequestBody List<String> notificationsIds) {
+        try {
+            notificationService.markAsDeleted(email, notificationsIds);
+            return ResponseEntity.ok("Notificationes Actualizadas");
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }

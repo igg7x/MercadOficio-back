@@ -105,4 +105,12 @@ public class JobSpecifications {
         };
     }
 
+    public static Specification<Job> findByStatusIsFalse() {
+        return (root, query, criteriaBuilder) -> {
+            return criteriaBuilder.and(
+                    criteriaBuilder.equal(root.get("status"), false),
+                    criteriaBuilder.equal(root.get("deleted"), false));
+        };
+    }
+
 }

@@ -20,11 +20,19 @@ public interface JobRepository extends JpaRepository<Job, Long>, JpaSpecificatio
 
         @Query(value = "SELECT j.* FROM jobs j " +
                         "INNER JOIN categories c ON j.category_id = c.category_id " +
-                        "WHERE c.category_name = :categoryName " +
+                        "INNER JOIN user_customers uc ON j.user_customer_id = uc.user_customer_id " +
+                        "INNER JOIN users uss ON uc.user_id = uss.user_id " +
+                        "WHERE c.category_name = :categoryName AND uss.is_banned = 0 AND uss.delete_at IS NULL AND j.status = 0 " +
                         "AND j.job_id NOT IN (" +
                         "    SELECT aj.job_id " +
                         "    FROM apply_jobs aj " +
                         "    JOIN user_offerings uo ON aj.user_offering_id = uo.user_offering_id " +
+                        "    JOIN users u ON uo.user_id = u.user_id " +
+                        "    WHERE u.email = :userOfferingEmail" +
+                        ") " +
+                        "AND j.deleted = 0 " +
+                        "AND uss.user_id NOT IN (" +
+                        "    SELECT uo.user_id FROM user_offerings uo " +
                         "    JOIN users u ON uo.user_id = u.user_id " +
                         "    WHERE u.email = :userOfferingEmail" +
                         ")", nativeQuery = true)

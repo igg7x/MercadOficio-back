@@ -3,6 +3,7 @@ package com.example.demo.services;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.models.Report;
+import com.example.demo.models.User;
 import com.example.demo.repositories.ReportRepository;
 import com.example.demo.services.specifications.ReportSpecifications;
 
@@ -23,6 +24,14 @@ public class ReportService {
     @Transactional
     public Report createReport(Report report) {
         return reportRepository.save(report);
+    }
+
+    @Transactional
+    public void desactivateReports(User userToUpdate) {
+        reportRepository.findAll(ReportSpecifications.findByReporteredId(userToUpdate.getUserId())).forEach(report -> {
+            report.setReportStatus(false);
+            reportRepository.save(report);
+        });
     }
 
 }
