@@ -1,6 +1,6 @@
 package com.example.demo.services.mapper.Review;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Component;
 
@@ -45,7 +45,7 @@ public class ReviewMapperImpl implements ReviewMapper {
             throw new ReviewRatingException("La calificacion debe ser entre 1 y 5");
         }
         review.setText(createReviewDTO.getText());
-        review.setCreated_at(LocalDate.now());
+        review.setCreated_at(LocalDateTime.now());
         return review;
     }
 

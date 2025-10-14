@@ -1,6 +1,6 @@
 package com.example.demo.DTO.User;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.example.demo.models.Notification;
 import com.example.demo.models.NotificationsUsers;
@@ -31,7 +31,7 @@ public class NotificationDTO {
     private String type;
     private String message;
     private boolean read_status;
-    private LocalDate createdAt;
+    private LocalDateTime createdAt;
     private String jobId;
 
 }

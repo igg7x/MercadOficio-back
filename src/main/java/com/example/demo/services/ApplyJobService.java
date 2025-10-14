@@ -1,6 +1,6 @@
 package com.example.demo.services;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -52,7 +52,7 @@ public class ApplyJobService {
                 newJobApplication.setId(applyJobsKey);
                 newJobApplication.setJob(job);
                 newJobApplication.setUserOffering(userOffering);
-                newJobApplication.setApplyDate(LocalDate.now());
+                newJobApplication.setApplyDate(LocalDateTime.now());
                 applyJobsRepository.save(newJobApplication);
 
                 // List<String> usersEmails = new ArrayList<>() {

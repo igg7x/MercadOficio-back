@@ -33,7 +33,7 @@ public class Job {
     @Column(length = 64, nullable = false)
     private String location;
 
-    @Column(nullable = true, columnDefinition = "tinyint default 0")
+    @Column(nullable = true)
     private Boolean status;
 
     @Column(nullable = false, columnDefinition = "varchar(128) default ''")
@@ -48,8 +48,8 @@ public class Job {
     @Column(nullable = false)
     private LocalDate deadline_date;
 
-    @Column(nullable = false, columnDefinition = "tinyint default 0")
-    private Boolean deleted;
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "categoryId", referencedColumnName = "categoryId", nullable = false)

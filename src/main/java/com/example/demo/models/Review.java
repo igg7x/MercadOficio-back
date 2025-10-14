@@ -1,6 +1,7 @@
 package com.example.demo.models;
 
-import java.time.LocalDate;
+// import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,10 +28,10 @@ public class Review {
     private String text;
 
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
-    private LocalDate created_at;
+    private LocalDateTime created_at;
 
     @Column(nullable = true, columnDefinition = "TIMESTAMP")
-    private LocalDate deleted_at;
+    private LocalDateTime deleted_at;
 
     @ManyToOne
     @JoinColumn(name = "userReviewedId", referencedColumnName = "userId", nullable = false)
@@ -44,7 +45,7 @@ public class Review {
     @JoinColumn(name = "jobId", referencedColumnName = "jobId", nullable = false)
     private Job job;
 
-    @Column(nullable = true, columnDefinition = "double default 0")
+    @Column(nullable = true)
     private Integer rating;
 
 }

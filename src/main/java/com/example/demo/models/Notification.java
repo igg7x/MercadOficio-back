@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -11,6 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @Entity
+@Table(name = "notifications")
 public class Notification {
 
     @Id
@@ -36,8 +38,8 @@ public class Notification {
     @Column(length = 128, nullable = false)
     private String message;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
-    private LocalDate createdAt;
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
 
     public enum TypesNotification {
         SUCCESS,
@@ -53,6 +55,6 @@ public class Notification {
         this.title = title;
         this.type = type;
         this.message = message;
-        this.createdAt = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
     }
 }

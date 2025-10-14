@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Table(name = "apply_jobs")
 public class ApplyJobs {
 
     @EmbeddedId
@@ -31,7 +33,7 @@ public class ApplyJobs {
     @JoinColumn(nullable = false, name = "user_offering_id")
     private UserOffering userOffering;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT (now())")
-    private LocalDate applyDate;
+    @Column(nullable = false)
+    private LocalDateTime applyDate;
 
 }

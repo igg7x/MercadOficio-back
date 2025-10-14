@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import org.springframework.data.domain.Pageable;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import org.springframework.data.domain.Page;
@@ -143,7 +144,7 @@ public class ReviewService {
                                                 userReviwer.getUserId(), userReviewed.getUserId(), job.getJobId()))
                                 .orElseThrow(() -> new JobNotFoundException("Reseña no encontrada"));
 
-                review.setDeleted_at(java.time.LocalDate.now());
+                review.setDeleted_at(LocalDateTime.now());
                 reviewRepository.save(review);
                 notifyDeletingReview(userReviwer, userReviewed, job);
         }

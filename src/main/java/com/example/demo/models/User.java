@@ -1,6 +1,6 @@
 package com.example.demo.models;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,8 +54,8 @@ public class User {
     @Column(length = 32, nullable = true)
     private Long phone;
 
-    @Column(length = 64, nullable = true)
-    private Date deleteAt;
+    // @Column(length = 64, nullable = true)
+    private LocalDateTime deleteAt;
 
     @Column(length = 128, nullable = true)
     private String biography;
@@ -67,11 +67,11 @@ public class User {
     @OneToOne(mappedBy = "user")
     private UserCustomer userCustomer;
 
-    @Column(nullable = false, columnDefinition = "int default 0")
-    private Integer strikesCount;
+    @Column(nullable = false)
+    private Integer strikesCount = 0;
 
-    @Column(nullable = false, columnDefinition = "tinyint default 0")
-    private Boolean isBanned;
+    @Column(nullable = false)
+    private Boolean isBanned = false;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)

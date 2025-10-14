@@ -1,7 +1,7 @@
 package com.example.demo.services.mapper.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -212,7 +212,7 @@ public class UserMapperImpl implements UserMapper {
 
     @Override
     public User deleteUser(User user) {
-        user.setDeleteAt(Date.from(java.time.Instant.now()));
+        user.setDeleteAt(LocalDateTime.now());
         user.setName("Usuario Eliminado");
         user.setSurname("");
         user.setEmail("eliminado" + UUID.randomUUID() + "@email.com");
