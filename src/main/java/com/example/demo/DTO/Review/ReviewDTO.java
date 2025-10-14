@@ -1,6 +1,6 @@
 package com.example.demo.DTO.Review;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.Data;
 import lombok.Getter;
@@ -16,7 +16,7 @@ public class ReviewDTO {
     private String userEmailReviewer;
     private String userEmailReviewed;
     private String text;
-    private LocalDate created_at;
+    private LocalDateTime created_at;
     private int rating;
 }
 

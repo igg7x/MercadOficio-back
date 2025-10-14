@@ -1,6 +1,6 @@
 package com.example.demo.DTO.Job;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.lang.Nullable;
 
@@ -14,5 +14,5 @@ import lombok.Setter;
 public class ApplyJobDTO {
     private String userOfferingEmail;
     @Nullable
-    private LocalDate applyDate;
+    private LocalDateTime applyDate;
 }

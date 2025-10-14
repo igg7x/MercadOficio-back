@@ -1,7 +1,7 @@
 package com.example.demo.services;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -104,7 +104,7 @@ public class UserService {
         if (user == null) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "User not found");
         }
-        user.setDeleteAt(Date.from(java.time.Instant.now()));
+        user.setDeleteAt(LocalDateTime.now());
         String randomSequence = UUID.randomUUID().toString().substring(0, 8);
         user.setEmail("anonimo_" + randomSequence + "@email.com");
         user.setBiography("");

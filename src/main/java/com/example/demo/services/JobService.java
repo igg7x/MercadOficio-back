@@ -1,5 +1,6 @@
 package com.example.demo.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -107,7 +108,7 @@ public class JobService {
         jobRepository.save(job);
         Set<Review> reviews = job.getReviews();
         for (Review review : reviews) {
-            review.setDeleted_at(java.time.LocalDate.now());
+            review.setDeleted_at(LocalDateTime.now());
             reviewRepository.save(review);
         }
         // Set<ApplyJobs> applications = job.getApplyJobs();

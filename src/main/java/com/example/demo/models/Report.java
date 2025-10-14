@@ -47,9 +47,9 @@ public class Report {
     @JoinColumn(name = "reporterUserId", referencedColumnName = "userId", nullable = false)
     private User reporterUserId;
 
-    @Column(nullable = false, columnDefinition = "tinyint default 1")
-    private Boolean reportStatus; // the value 1 indicates that the report is active, and 0 indicates that it is
-                                  // inactive
+    @Column(nullable = false)
+    private Boolean reportStatus = true; // the value 1 indicates that the report is active, and 0 indicates that it is
+    // inactive
 
     @ManyToOne
     @JoinColumn(name = "reportedUserId", referencedColumnName = "userId", nullable = false)
